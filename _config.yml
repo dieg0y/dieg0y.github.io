@@ -1,0 +1,22 @@
+title: dieg0y Blog - Red team / Pentester
+author: dieg0y
+email: diegojose0405@gmail.com
+description: > # this means to ignore newlines until "show_exerpts:"
+    Cybersecurity
+show_excerpts: true # set to true to show excerpts on the homepage
+
+# Minima date format
+# refer to http://shopify.github.io/liquid/filters/date/ if you want to customize this
+sass:
+  sass_dir: _sass
+plainwhite:
+  name: dieg0y
+  tagline: Penetration Tester
+  date_format: "%b %-d, %Y"
+  sitemap: true # set to true to generate sitemap.xml content
+
+theme: plainwhite
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-feed
