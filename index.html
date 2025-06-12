@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
     <title>dieg0y - Pentesting & Cybersecurity</title>
     <style>
         * {
@@ -35,7 +36,6 @@
             font-size: 4rem;
             font-weight: bold;
             text-transform: uppercase;
-            position: relative;
             color: #ffffff;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
@@ -108,12 +108,22 @@
             margin-bottom: 10px;
         }
 
+        /* Estilo para los enlaces dentro de las tarjetas de la nueva sección */
+        .card h3 a {
+            color: inherit;
+            text-decoration: none;
+            transition: text-decoration 0.3s ease;
+        }
+
+        .card h3 a:hover {
+            text-decoration: underline;
+        }
+
         .card p {
             color: #cccccc;
             line-height: 1.6;
         }
 
-        /* Search functionality */
         .search-container {
             margin-bottom: 30px;
             position: relative;
@@ -149,7 +159,6 @@
             font-size: 1.2rem;
         }
 
-        /* Writeups específicos */
         .writeup-item {
             background: rgba(0, 0, 0, 0.4);
             padding: 20px;
@@ -178,7 +187,6 @@
             font-size: 0.9rem;
         }
 
-        /* Writeup detail view */
         .writeup-detail {
             background: rgba(0, 0, 0, 0.3);
             padding: 30px;
@@ -247,9 +255,12 @@
             color: #888888;
         }
 
-        /* Secciones ocultas por defecto */
-        .hidden {
-            display: none;
+        .page {
+            display: none; /* Oculta todas las páginas por defecto */
+        }
+
+        .page.active {
+            display: block; /* Muestra solo la página activa */
         }
 
         .back-button {
@@ -267,7 +278,6 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* Certification badges */
         .cert-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -285,7 +295,6 @@
             font-style: italic;
         }
 
-        /* About me section styling */
         .about-content {
             text-align: center;
             font-size: 1.1rem;
@@ -309,11 +318,7 @@
                 align-items: center;
             }
             
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .cert-grid {
+            .grid, .cert-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -321,8 +326,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Página Principal -->
-        <div id="main-page">
+        <div id="main-page" class="page active">
             <header class="header">
                 <h1 class="main-title">dieg0y</h1>
                 <div class="subtitle">Cybersecurity & Penetration Testing</div>
@@ -330,12 +334,8 @@
 
             <section class="section">
                 <h2>📝 Machine Writeups</h2>
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Search writeups..." id="writeup-search">
-                    <span class="search-icon">🔍</span>
-                </div>
                 <div class="grid">
-                    <div class="card" onclick="showWriteups()">
+                    <div class="card" data-page="writeups-page">
                         <h3>Writeups Collection</h3>
                         <p>Detailed documentation of machine exploitation, privilege escalation techniques, and complete penetration testing methodologies from various platforms including HackTheBox.</p>
                     </div>
@@ -344,16 +344,12 @@
 
             <section class="section">
                 <h2>💻 Projects</h2>
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Search projects..." id="project-search">
-                    <span class="search-icon">🔍</span>
-                </div>
                 <div class="grid">
-                    <div class="card" onclick="showBashProjects()">
+                    <div class="card" data-page="bash-page">
                         <h3>🐚 Bash Scripts</h3>
                         <p>Here are my custom Bash scripts for different utilities in penetration testing and system administration.</p>
                     </div>
-                    <div class="card" onclick="showPythonProjects()">
+                    <div class="card" data-page="python-page">
                         <h3>🐍 Python Tools</h3>
                         <p>Here are my custom Python tools for security testing, automation, and vulnerability research.</p>
                     </div>
@@ -373,9 +369,39 @@
                 <h2>👤 About Me</h2>
                 <div class="about-content">
                     <p>I'm just passionate about cybersecurity, every day wanting to learn new things, I'm good at adapting to new environments. I like to help whenever I can as well as learn from those who know more.</p>
+                    <p style="margin-top: 15px;">If you want to contact me, you can write to my email: <a href="mailto:diegojose0405@gmail.com" style="color: #ffffff;">diegojose0405@gmail.com</a></p>
                 </div>
             </section>
-
+            
+            <section class="section">
+                <h2>🔗 Important Links</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3><a href="https://osintframework.com/" target="_blank" rel="noopener noreferrer">OSINT Framework</a></h3>
+                        <p>A comprehensive framework of OSINT tools for data collection and intelligence gathering.</p>
+                    </div>
+                    <div class="card">
+                        <h3><a href="https://pauljerimy.com/security-certification-roadmap/" target="_blank" rel="noopener noreferrer">Security Certification Roadmap</a></h3>
+                        <p>A visual guide to cybersecurity certifications, helping professionals plan their career path.</p>
+                    </div>
+                    <div class="card">
+                        <h3><a href="https://forum.hackersploit.org/" target="_blank" rel="noopener noreferrer">HackerSploit Forum</a></h3>
+                        <p>A community forum for discussing ethical hacking, cybersecurity, and topics from HackerSploit's training.</p>
+                    </div>
+                    <div class="card">
+                        <h3><a href="https://book.hacktricks.wiki/en/index.html" target="_blank" rel="noopener noreferrer">HackTricks</a></h3>
+                        <p>A massive resource of hacking tricks and techniques for penetration testers and red teamers.</p>
+                    </div>
+                    <div class="card">
+                        <h3><a href="https://www.exploit-db.com/" target="_blank" rel="noopener noreferrer">Exploit Database</a></h3>
+                        <p>A public archive of exploits and vulnerable software, maintained by Offensive Security.</p>
+                    </div>
+                    <div class="card">
+                        <h3><a href="https://portswigger.net/web-security/all-labs" target="_blank" rel="noopener noreferrer">PortSwigger Web Security Academy</a></h3>
+                        <p>A complete set of free, online web security labs from the creators of Burp Suite.</p>
+                    </div>
+                </div>
+            </section>
             <section class="section">
                 <h2>📞 Contact</h2>
                 <div style="text-align: center; margin-bottom: 30px;">
@@ -384,219 +410,182 @@
                     <p style="color: #666666; font-size: 1rem;">Colombia, Barranquilla</p>
                 </div>
                 <div class="contact-links">
-                    <a href="https://github.com/DJYonoffMolina?tab=repositories" target="_blank" class="contact-link">GitHub</a>
-                    <a href="https://www.linkedin.com/in/diego-jose-yonoff-molina/" target="_blank" class="contact-link">LinkedIn</a>
-                    <a href="https://app.hackthebox.com/users/1961604" target="_blank" class="contact-link">HackTheBox</a>
-                    <a href="https://hackerone.com/dieg0y?type=user" target="_blank" class="contact-link">HackerOne</a>
-                    <a href="https://bugcrowd.com/dieg0y_" target="_blank" class="contact-link">BugCrowd</a>
+                    <a href="https://github.com/dieg0y" target="_blank" rel="noopener noreferrer" class="contact-link">GitHub</a>
+                    <a href="https://www.linkedin.com/in/diego-jose-yonoff-molina/" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>
+                    <a href="https://app.hackthebox.com/users/1961604" target="_blank" rel="noopener noreferrer" class="contact-link">HackTheBox</a>
+                    <a href="https://hackerone.com/dieg0y?type=user" target="_blank" rel="noopener noreferrer" class="contact-link">HackerOne</a>
                 </div>
             </section>
 
             <footer class="footer">
-                <p>&copy; 2025 dieg0y - Ethical Hacking & Cybersecurity</p>
+                <p>&copy; <span id="year"></span> dieg0y - Ethical Hacking & Cybersecurity</p>
             </footer>
         </div>
 
-        <!-- Página de Writeups -->
-        <div id="writeups-page" class="hidden">
-            <button class="back-button" onclick="showMainPage()">← Back to Main</button>
+        <div id="writeups-page" class="page">
+            <button class="back-button" data-page="main-page">← Back to Main</button>
             <section class="section">
                 <h2>📝 Machine Writeups</h2>
                 <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Search writeups..." id="writeups-page-search">
+                    <input type="text" class="search-input" placeholder="Search writeups..." id="writeup-search">
                     <span class="search-icon">🔍</span>
                 </div>
                 
-                <div class="writeup-item" onclick="showWriteupDetail('mantis')">
+                <div class="writeup-item" data-page="writeup-detail-page" data-machine="mantis">
                     <div class="writeup-name">Mantis</div>
                     <div class="writeup-difficulty">Difficulty: Hard</div>
                 </div>
                 
-                <!-- Add more writeups here following the same format -->
-                
-            </section>
+                </section>
         </div>
 
-        <!-- Writeup Detail Page -->
-        <div id="writeup-detail-page" class="hidden">
-            <button class="back-button" onclick="showWriteups()">← Back to Writeups</button>
+        <div id="writeup-detail-page" class="page">
+            <button class="back-button" data-page="writeups-page">← Back to Writeups</button>
             <section class="section">
                 <h2 id="writeup-title">Machine Writeup</h2>
-                <div id="writeup-content" class="writeup-detail">
-                    <!-- Content will be dynamically loaded here -->
-                </div>
+                <div id="writeup-content-container" class="writeup-detail">
+                    </div>
             </section>
         </div>
 
-        <!-- Página de Proyectos Bash -->
-        <div id="bash-page" class="hidden">
-            <button class="back-button" onclick="showMainPage()">← Back to Main</button>
+        <div id="bash-page" class="page">
+            <button class="back-button" data-page="main-page">← Back to Main</button>
             <section class="section">
                 <h2>🐚 Bash Scripts</h2>
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Search bash scripts..." id="bash-search">
-                    <span class="search-icon">🔍</span>
-                </div>
-                
-                <!-- Example script card -->
                 <div class="card">
                     <h3>Example Script</h3>
                     <p>Description of what this script does</p>
-                    <a href="#" target="_blank" style="color: #888888; text-decoration: none;">View on GitHub →</a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" style="color: #888888; text-decoration: none;">View on GitHub →</a>
                 </div>
-                
             </section>
         </div>
 
-        <!-- Página de Proyectos Python -->
-        <div id="python-page" class="hidden">
-            <button class="back-button" onclick="showMainPage()">← Back to Main</button>
+        <div id="python-page" class="page">
+            <button class="back-button" data-page="main-page">← Back to Main</button>
             <section class="section">
                 <h2>🐍 Python Tools</h2>
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Search python tools..." id="python-search">
-                    <span class="search-icon">🔍</span>
-                </div>
-                
-                <!-- Example tool card -->
                 <div class="card">
                     <h3>Example Tool</h3>
                     <p>Description of what this tool does</p>
-                    <a href="#" target="_blank" style="color: #888888; text-decoration: none;">View on GitHub →</a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" style="color: #888888; text-decoration: none;">View on GitHub →</a>
                 </div>
-                
             </section>
         </div>
     </div>
 
     <script>
-        // Navigation functions
-        function showMainPage() {
-            document.getElementById('main-page').classList.remove('hidden');
-            document.getElementById('writeups-page').classList.add('hidden');
-            document.getElementById('writeup-detail-page').classList.add('hidden');
-            document.getElementById('bash-page').classList.add('hidden');
-            document.getElementById('python-page').classList.add('hidden');
-        }
-
-        function showWriteups() {
-            document.getElementById('main-page').classList.add('hidden');
-            document.getElementById('writeups-page').classList.remove('hidden');
-            document.getElementById('writeup-detail-page').classList.add('hidden');
-        }
-
-        function showBashProjects() {
-            document.getElementById('main-page').classList.add('hidden');
-            document.getElementById('bash-page').classList.remove('hidden');
-        }
-
-        function showPythonProjects() {
-            document.getElementById('main-page').classList.add('hidden');
-            document.getElementById('python-page').classList.remove('hidden');
-        }
-
-        // Writeup detail functionality
-        function showWriteupDetail(machineName) {
-            document.getElementById('writeups-page').classList.add('hidden');
-            document.getElementById('writeup-detail-page').classList.remove('hidden');
-            
-            // Load writeup content based on machine name
-            loadWriteupContent(machineName);
-        }
-
-        function loadWriteupContent(machineName) {
-            const title = document.getElementById('writeup-title');
-            const content = document.getElementById('writeup-content');
-            
-            // Default template structure
-            const template = `
-                <h3>🔍 Recognition</h3>
-                <div class="writeup-content">
-                    <p>Initial reconnaissance and information gathering phase.</p>
-                    <!-- Add your reconnaissance content here -->
-                </div>
-
-                <h3>📋 Enumeration</h3>
-                <div class="writeup-content">
-                    <p>Detailed enumeration of services and potential attack vectors.</p>
-                    <!-- Add your enumeration content here -->
-                    <!-- Example image: <img src="path/to/your/image.png" alt="Enumeration Screenshot" class="writeup-image"> -->
-                </div>
-
-                <h3>💥 Exploitation</h3>
-                <div class="writeup-content">
-                    <p>Exploitation of identified vulnerabilities to gain initial access.</p>
-                    <!-- Add your exploitation content here -->
-                </div>
-
-                <h3>🔄 Post-Exploitation</h3>
-                <div class="writeup-content">
-                    <p>Post-exploitation activities and information gathering.</p>
-                    <!-- Add your post-exploitation content here -->
-                </div>
-
-                <h3>🔐 Privilege Escalation</h3>
-                <div class="writeup-content">
-                    <p>Methods used to escalate privileges and gain full system control.</p>
-                    <!-- Add your privilege escalation content here -->
-                </div>
-            `;
-
-            // Customize content based on machine
-            if (machineName === 'mantis') {
-                title.textContent = 'Mantis - Hard';
-                content.innerHTML = template;
-            } else {
-                title.textContent = machineName.charAt(0).toUpperCase() + machineName.slice(1);
-                content.innerHTML = template;
-            }
-        }
-
-        // Search functionality
-        function setupSearch() {
-            const searchInputs = [
-                { input: 'writeup-search', items: '.writeup-item' },
-                { input: 'writeups-page-search', items: '.writeup-item' },
-                { input: 'project-search', items: '.card' },
-                { input: 'bash-search', items: '.card' },
-                { input: 'python-search', items: '.card' }
-            ];
-
-            searchInputs.forEach(({ input, items }) => {
-                const searchInput = document.getElementById(input);
-                if (searchInput) {
-                    searchInput.addEventListener('input', function() {
-                        const searchTerm = this.value.toLowerCase();
-                        const elements = document.querySelectorAll(items);
-                        
-                        elements.forEach(element => {
-                            const text = element.textContent.toLowerCase();
-                            if (text.includes(searchTerm)) {
-                                element.style.display = '';
-                            } else {
-                                element.style.display = 'none';
-                            }
-                        });
-                    });
-                }
-            });
-        }
-
-        // Visual effects
         document.addEventListener('DOMContentLoaded', () => {
-            // Setup search functionality
-            setupSearch();
+            
+            const allPages = document.querySelectorAll('.page');
+            const navLinks = document.querySelectorAll('.card[data-page], .writeup-item[data-page], .back-button[data-page]');
+            const yearSpan = document.getElementById('year');
 
-            // Add hover effects
-            document.querySelectorAll('.card, .writeup-item, .contact-link').forEach(element => {
-                element.addEventListener('mouseenter', () => {
-                    element.style.filter = 'brightness(1.1)';
+            // Actualiza el año del footer automáticamente
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+
+            // Función centralizada para cambiar de página
+            function showPage(pageId) {
+                allPages.forEach(page => {
+                    page.classList.remove('active');
                 });
-                
-                element.addEventListener('mouseleave', () => {
-                    element.style.filter = 'brightness(1)';
+                const newPage = document.getElementById(pageId);
+                if (newPage) {
+                    newPage.classList.add('active');
+                    window.scrollTo(0, 0); // Sube al inicio de la página
+                }
+            }
+
+            // Asigna los eventos de clic para la navegación
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const pageId = link.getAttribute('data-page');
+                    showPage(pageId);
+
+                    // Si es un item de writeup, carga su contenido
+                    if (link.classList.contains('writeup-item')) {
+                        const machineName = link.getAttribute('data-machine');
+                        loadWriteupContent(machineName);
+                    }
                 });
             });
+
+            // Carga el contenido de un writeup específico
+            function loadWriteupContent(machineName) {
+                const titleEl = document.getElementById('writeup-title');
+                const contentEl = document.getElementById('writeup-content-container');
+                
+                if (!titleEl || !contentEl) return;
+
+                const formattedTitle = machineName.charAt(0).toUpperCase() + machineName.slice(1);
+                
+                /*
+                COMENTARIOS PARA AGREGAR CONTENIDO E IMÁGENES A TUS WRITEUPS:
+                
+                Esta plantilla HTML de abajo define la estructura de cada writeup.
+                Para agregar tu contenido, simplemente edita el texto dentro de las etiquetas <p>.
+
+                PARA AGREGAR IMÁGENES:
+                1.  Asegúrate de que tus imágenes estén en una carpeta accesible (por ejemplo, una carpeta llamada 'img' en tu proyecto).
+                2.  Usa la etiqueta <img> como se muestra en el ejemplo comentado abajo.
+                3.  Reemplaza "ruta/a/tu/imagen.png" con la ruta real de tu imagen.
+                4.  El atributo 'alt' es MUY IMPORTANTE. Describe la imagen. Es crucial para la accesibilidad (lectores de pantalla) y para el SEO.
+                5.  La clase 'writeup-image' ya tiene estilos para que la imagen sea responsive y se vea bien.
+                */
+                const template = `
+                    <h3>🔍 Reconocimiento</h3>
+                    <div class="writeup-content">
+                        <p></p>
+                    </div>
+
+                    <h3>📋 Enumeración</h3>
+                    <div class="writeup-content">
+                        <p></p>
+                        </div>
+
+                    <h3>💥 Explotación</h3>
+                    <div class="writeup-content">
+                        <p></p>
+                    </div>
+                    
+                    <h3>🔄 Post-Explotación</h3>
+                    <div class="writeup-content">
+                        <p></p>
+                    </div>
+
+                    <h3>🔐 Escalada de Privilegios</h3>
+                    <div class="writeup-content">
+                        <p></p>
+                    </div>
+                `;
+
+                if (machineName === 'mantis') {
+                    titleEl.textContent = 'Mantis - Hard';
+                    contentEl.innerHTML = template; 
+                } else {
+                    titleEl.textContent = formattedTitle;
+                    contentEl.innerHTML = template;
+                }
+            }
+
+            // Funcionalidad de búsqueda
+            const searchInput = document.getElementById('writeup-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const writeupItems = document.querySelectorAll('#writeups-page .writeup-item');
+                    
+                    writeupItems.forEach(item => {
+                        const text = item.textContent.toLowerCase();
+                        if (text.includes(searchTerm)) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            }
         });
     </script>
 </body>
