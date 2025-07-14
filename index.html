@@ -108,7 +108,7 @@
             margin-bottom: 10px;
         }
 
-        /* Estilo para los enlaces dentro de las tarjetas de la nueva sección */
+        /* Links styling within the new section cards */
         .card h3 a {
             color: inherit;
             text-decoration: none;
@@ -256,11 +256,11 @@
         }
 
         .page {
-            display: none; /* Oculta todas las páginas por defecto */
+            display: none; /* Hides all pages by default */
         }
 
         .page.active {
-            display: block; /* Muestra solo la página activa */
+            display: block; /* Shows only the active page */
         }
 
         .back-button {
@@ -368,8 +368,23 @@
             <section class="section">
                 <h2>👤 About Me</h2>
                 <div class="about-content">
-                    <p>I'm just passionate about cybersecurity, every day wanting to learn new things, I'm good at adapting to new environments. I like to help whenever I can as well as learn from those who know more.</p>
+                    <p>I'm passionate about cybersecurity, constantly striving to learn new things every day. I'm good at adapting to new environments and I like to help whenever I can as well as learn from those who know more.</p>
                     <p style="margin-top: 15px;">If you want to contact me, you can write to my email: <a href="mailto:diegojose0405@gmail.com" style="color: #ffffff;">diegojose0405@gmail.com</a></p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>📞 Contact</h2>
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h3 style="color: #ffffff; margin-bottom: 15px;">dieg0y</h3>
+                    <p style="color: #888888; font-size: 1.2rem; margin-bottom: 10px;">Red Teamer / Pentester</p>
+                    <p style="color: #666666; font-size: 1rem;">Colombia, Barranquilla</p>
+                </div>
+                <div class="contact-links">
+                    <a href="https://github.com/dieg0y" target="_blank" rel="noopener noreferrer" class="contact-link">GitHub</a>
+                    <a href="https://www.linkedin.com/in/diego-jose-yonoff-molina/" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>
+                    <a href="https://app.hackthebox.com/users/1961604" target="_blank" rel="noopener noreferrer" class="contact-link">HackTheBox</a>
+                    <a href="https://hackerone.com/dieg0y?type=user" target="_blank" rel="noopener noreferrer" class="contact-link">HackerOne</a>
                 </div>
             </section>
             
@@ -400,20 +415,6 @@
                         <h3><a href="https://portswigger.net/web-security/all-labs" target="_blank" rel="noopener noreferrer">PortSwigger Web Security Academy</a></h3>
                         <p>A complete set of free, online web security labs from the creators of Burp Suite.</p>
                     </div>
-                </div>
-            </section>
-            <section class="section">
-                <h2>📞 Contact</h2>
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h3 style="color: #ffffff; margin-bottom: 15px;">dieg0y</h3>
-                    <p style="color: #888888; font-size: 1.2rem; margin-bottom: 10px;">Red Teamer / Pentester</p>
-                    <p style="color: #666666; font-size: 1rem;">Colombia, Barranquilla</p>
-                </div>
-                <div class="contact-links">
-                    <a href="https://github.com/dieg0y" target="_blank" rel="noopener noreferrer" class="contact-link">GitHub</a>
-                    <a href="https://www.linkedin.com/in/diego-jose-yonoff-molina/" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>
-                    <a href="https://app.hackthebox.com/users/1961604" target="_blank" rel="noopener noreferrer" class="contact-link">HackTheBox</a>
-                    <a href="https://hackerone.com/dieg0y?type=user" target="_blank" rel="noopener noreferrer" class="contact-link">HackerOne</a>
                 </div>
             </section>
 
@@ -465,9 +466,9 @@
             <section class="section">
                 <h2>🐍 Python Tools</h2>
                 <div class="card">
-                    <h3>Example Tool</h3>
-                    <p>Description of what this tool does</p>
-                    <a href="#" target="_blank" rel="noopener noreferrer" style="color: #888888; text-decoration: none;">View on GitHub →</a>
+                    <h3>IPsubnetting.py</h3>
+                    <p>A simple, clean command-line tool to calculate subnet information from a given IP address and CIDR. Features network ID calculation, broadcast address, netmask, IP class identification, and usable hosts count with input validation.</p>
+                    <a href="https://github.com/dieg0y/IPsubnetting" target="_blank" rel="noopener noreferrer" style="color: #888888; text-decoration: none;">View on GitHub →</a>
                 </div>
             </section>
         </div>
@@ -480,12 +481,12 @@
             const navLinks = document.querySelectorAll('.card[data-page], .writeup-item[data-page], .back-button[data-page]');
             const yearSpan = document.getElementById('year');
 
-            // Actualiza el año del footer automáticamente
+            // Updates the footer year automatically
             if (yearSpan) {
                 yearSpan.textContent = new Date().getFullYear();
             }
 
-            // Función centralizada para cambiar de página
+            // Centralized function to change pages
             function showPage(pageId) {
                 allPages.forEach(page => {
                     page.classList.remove('active');
@@ -493,17 +494,17 @@
                 const newPage = document.getElementById(pageId);
                 if (newPage) {
                     newPage.classList.add('active');
-                    window.scrollTo(0, 0); // Sube al inicio de la página
+                    window.scrollTo(0, 0); // Scrolls to the top of the page
                 }
             }
 
-            // Asigna los eventos de clic para la navegación
+            // Assigns click events for navigation
             navLinks.forEach(link => {
                 link.addEventListener('click', () => {
                     const pageId = link.getAttribute('data-page');
                     showPage(pageId);
 
-                    // Si es un item de writeup, carga su contenido
+                    // If it's a writeup item, loads its content
                     if (link.classList.contains('writeup-item')) {
                         const machineName = link.getAttribute('data-machine');
                         loadWriteupContent(machineName);
@@ -511,7 +512,7 @@
                 });
             });
 
-            // Carga el contenido de un writeup específico
+            // Loads the content of a specific writeup
             function loadWriteupContent(machineName) {
                 const titleEl = document.getElementById('writeup-title');
                 const contentEl = document.getElementById('writeup-content-container');
@@ -521,40 +522,40 @@
                 const formattedTitle = machineName.charAt(0).toUpperCase() + machineName.slice(1);
                 
                 /*
-                COMENTARIOS PARA AGREGAR CONTENIDO E IMÁGENES A TUS WRITEUPS:
+                COMMENTS FOR ADDING CONTENT AND IMAGES TO YOUR WRITEUPS:
                 
-                Esta plantilla HTML de abajo define la estructura de cada writeup.
-                Para agregar tu contenido, simplemente edita el texto dentro de las etiquetas <p>.
+                This HTML template below defines the structure of each writeup.
+                To add your content, simply edit the text within the <p> tags.
 
-                PARA AGREGAR IMÁGENES:
-                1.  Asegúrate de que tus imágenes estén en una carpeta accesible (por ejemplo, una carpeta llamada 'img' en tu proyecto).
-                2.  Usa la etiqueta <img> como se muestra en el ejemplo comentado abajo.
-                3.  Reemplaza "ruta/a/tu/imagen.png" con la ruta real de tu imagen.
-                4.  El atributo 'alt' es MUY IMPORTANTE. Describe la imagen. Es crucial para la accesibilidad (lectores de pantalla) y para el SEO.
-                5.  La clase 'writeup-image' ya tiene estilos para que la imagen sea responsive y se vea bien.
+                TO ADD IMAGES:
+                1.  Make sure your images are in an accessible folder (for example, a folder called 'img' in your project).
+                2.  Use the <img> tag as shown in the commented example below.
+                3.  Replace "path/to/your/image.png" with the actual path to your image.
+                4.  The 'alt' attribute is VERY IMPORTANT. It describes the image. It's crucial for accessibility (screen readers) and SEO.
+                5.  The 'writeup-image' class already has styles to make the image responsive and look good.
                 */
                 const template = `
-                    <h3>🔍 Reconocimiento</h3>
+                    <h3>🔍 Reconnaissance</h3>
                     <div class="writeup-content">
                         <p></p>
                     </div>
 
-                    <h3>📋 Enumeración</h3>
+                    <h3>📋 Enumeration</h3>
                     <div class="writeup-content">
                         <p></p>
                         </div>
 
-                    <h3>💥 Explotación</h3>
+                    <h3>💥 Exploitation</h3>
                     <div class="writeup-content">
                         <p></p>
                     </div>
                     
-                    <h3>🔄 Post-Explotación</h3>
+                    <h3>🔄 Post-Exploitation</h3>
                     <div class="writeup-content">
                         <p></p>
                     </div>
 
-                    <h3>🔐 Escalada de Privilegios</h3>
+                    <h3>🔐 Privilege Escalation</h3>
                     <div class="writeup-content">
                         <p></p>
                     </div>
@@ -569,7 +570,7 @@
                 }
             }
 
-            // Funcionalidad de búsqueda
+            // Search functionality
             const searchInput = document.getElementById('writeup-search');
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
