@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dieg0y.github.io/sitemap.xml
