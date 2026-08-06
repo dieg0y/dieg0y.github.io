@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Link } from "react-router-dom";
-import { ShieldCheck, GraduationCap, CheckCircle2, ArrowRight, MapPin, Calendar, Briefcase } from "lucide-react";
+import { ShieldCheck, GraduationCap, CheckCircle2, MapPin, Calendar, Briefcase } from "lucide-react";
 
 export function Experience() {
   return (

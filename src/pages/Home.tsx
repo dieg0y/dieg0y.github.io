@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { ArrowRight, Download, Mail, MapPin, ShieldCheck, BookOpen, Terminal, Github } from "lucide-react";
+import { Download, Mail, MapPin, ShieldCheck, BookOpen, Github } from "lucide-react";
 import { articles } from "../data/articles";
 
 export function Home() {

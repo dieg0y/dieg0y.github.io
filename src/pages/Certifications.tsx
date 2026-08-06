@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { Award, ArrowUpRight, CheckCircle2, ShieldCheck, ExternalLink, X, FileText, Check } from "lucide-react";
+import { Award, ArrowUpRight, CheckCircle2, ShieldCheck, ExternalLink, X, FileText } from "lucide-react";
 
 export function Certifications() {
   const [showReportModal, setShowReportModal] = useState(false);

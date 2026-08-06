@@ -81,8 +81,7 @@ export function About() {
                 </p>
                 <a
                   href="/cv-diego-yonoff.pdf"
-                  target="_blank"
-                  rel="noreferrer"
+                  download="CV_Diego_Yonoff_SOC_Analyst.pdf"
                   className="inline-block mt-2 px-4 py-2 rounded-full bg-ink text-paper font-mono text-xs font-semibold hover:bg-accent transition-colors"
                 >
                   Download Curriculum Vitae (PDF)
