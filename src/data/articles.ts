@@ -43,7 +43,7 @@ export const initialArticles: Article[] = [
     date: "August 2026",
     readTime: "8 min read",
     author: defaultAuthor,
-    tags: ["SOC", "Blue Team", "Cybersecurity", "SIEM", "Security Operations", "SIEM & Detection", "Investigation & Analysis", "Scripting & Query Languages", "Networking & Operating Systems", "Microsoft"],
+    tags: ["SOC", "Blue Team", "Cybersecurity", "SIEM", "Security Operations", "Investigation & Analysis"],
     content: `If you are starting out in cybersecurity, you have likely heard terms such as **SOC**, **SIEM**, **EDR**, or **SOC Analyst**, but you might not yet be fully clear on how everything fits together within a security team.
 
 In this article, I want to share a straightforward introduction based on my learning and research into how a **Security Operations Center (SOC)** functions. The goal is not to cover every technical detail, but to provide a clear overview that helps explain how a SOC is organized, what its main roles are, and what a basic analyst workflow looks like.
