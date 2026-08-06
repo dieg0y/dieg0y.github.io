@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { projects } from "../data/projects";
-import { Github, Star, GitFork, Terminal, ArrowUpRight } from "lucide-react";
+import { Github, Terminal, ArrowUpRight } from "lucide-react";
 
 export function Projects() {
   const subnetProject = projects[0];
@@ -36,20 +36,11 @@ export function Projects() {
             transition={{ duration: 0.5 }}
             className="rounded-2xl border border-ink/10 bg-paper p-8 sm:p-10 transition-all hover:border-accent shadow-sm"
           >
-            <div className="flex items-center justify-between mb-6">
+            {/* Aquí solo dejamos el badge del lenguaje, sin las estrellas y forks */}
+            <div className="mb-6">
               <span className="px-3 py-1 rounded bg-accent/10 text-accent font-mono text-xs font-bold">
                 {subnetProject.language} CLI Tool
               </span>
-              <div className="flex items-center gap-4 text-xs font-mono text-ink-light">
-                <span className="flex items-center gap-1.5">
-                  <Star className="h-4 w-4 text-amber-500 fill-amber-500/20" />
-                  {subnetProject.stars} stars
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <GitFork className="h-4 w-4" />
-                  {subnetProject.forks} forks
-                </span>
-              </div>
             </div>
 
             <h2 className="font-mono text-3xl sm:text-4xl font-bold text-ink mb-4">
@@ -98,4 +89,3 @@ export function Projects() {
     </div>
   );
 }
-
