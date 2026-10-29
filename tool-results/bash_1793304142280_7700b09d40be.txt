@@ -1,0 +1,260 @@
+=== FASE 31 (10 proyectos IAM) ===
+  1. Dominar Windows como plataforma de identidad: usuarios y grupos locales, permisos NTFS (lectura, escritura, modificación, control 
+  2. Dominar Linux como el otro lado del mundo identidades: /etc/passwd, /etc/group y el concepto de /etc/shadow; propietario/grupo/otr
+  3. Ejercicio Linux de correlación identidad→permiso: en una VM, crear cuentas ficticias de empleados, organizar grupos por departamen
+  4. Redes para IAM: DNS (la resolución de nombres sostiene directorios, endpoints de autenticación y federación — un fallo de DNS se d
+  5. Formatos y datos del analista: JSON (leer, editar, validar y transformar — el idioma de toda API de identidad), CSV (inventarios, 
+  6. HTTP y APIs como lenguaje diario: métodos GET/POST/PATCH/PUT/DELETE con su significado; códigos 200, 201, 400, 401 (¿token ausente
+  7. Adoptar Git y GitHub como hábito profesional: ramas, commits, pull requests, versiones y documentación — el repositorio donde vivi
+  8. Construir el toolkit multi-lenguaje del analista: Bash básico (grep, awk, cut, sort, uniq para procesar logs), PowerShell (pipelin
+  9. Prueba de salida de la fase (el filtro mental que usa TODO analista): ante "una petición de acceso falla", separar por descarte si
+  10. Publicar el "lab de fundamentos": la VM Linux con el ejercicio de usuarios/grupos documentado (cuentas por departamento, alta/camb
+  11. Reconocer desde el primer día los Event IDs de seguridad de Windows (con la auditoría avanzada habilitada): 4624 (inicio de sesión
+  12. Definir con precisión el ciclo JML: Joiner (alta el día de contratación con sus accesos correctos), Mover (cambio de rol: revocar 
+  13. Diferenciar RBAC (permisos por rol: el "Agente de Soporte N2" ve solo tickets asignados), ABAC (por atributos: department -eq "Fin
+  14. Comprender la Segregación de Funciones (SoD): identificar toxic combinations (crear proveedores + aprobar pagos; desarrollar códig
+  15. Preparar la respuesta a "detecta y corrige el Privilege Creep cuando un empleado cambia de departamento": el Mover debe disparar u
+  16. Redactar SOP-IAM-001-JML-Framework.pdf: flujos Joiner/Mover/Leaver diagramados, matriz de aprobación (qué aprueba el jefe directo,
+  17. Interiorizar "la identidad es el nuevo perímetro": el castle-and-moat murió y el control se trasladó a verificar explícitamente ca
+  18. Caso práctico escrito: un analista pasa de Nómina a Ventas. Enumerar qué pierde (carpetas de nómina, consulta de salarios en el ER
+  19. Mapear el ecosistema por capas: IAM/IdM (directorio + autenticación: AD, Entra ID, Okta, Ping, ForgeRock), IGA (gobernanza del cic
+  20. Manejar el vocabulario de gobernanza como profesional: política (el QUÉ y el PORQUÉ, aprobado por dirección), estándar (el nivel o
+  21. Mapear IAM contra los frameworks que citan los auditores: ISO/IEC 27001:2022 (controles A.5.15–A.5.18 de control de acceso, A.8.2 
+  22. Tener la respuesta de 60 segundos a "¿qué es IAM?": la disciplina que garantiza que la identidad correcta tenga el acceso correcto
+  23. Manejar el vocabulario raíz con precisión de diccionario: identidad (representa a una persona, aplicación, dispositivo u otra enti
+  24. Taxonomizar los tipos de identidad y sus controles distintos: empleados, contratistas/temporales/proveedores, invitados externos (
+  25. Completar la caja de modelos y principios con los que faltan: ACL (interpretar listas de control de acceso asociadas a recursos — 
+  26. Estructurar el dominio con OUs por función (nunca por persona), Users, Security Groups y Group Nesting. Aplicar AGDLP: Account → G
+  27. Administrar Service Accounts: naming svc-, owner documentado en description y migración a gMSA (New-ADServiceAccount -PrincipalsAl
+  28. Detectar los hallazgos clásicos con PowerShell: cuentas durmientes (Search-ADAccount -AccountInactive -TimeSpan 90.00:00:00), Pass
+  29. Saber responder qué eventos auditar ante membresías no autorizadas: 4728 (agregado a grupo Global), 4732 (grupo Domain Local), 475
+  30. Generar un reporte de auditoría ejecutable por otro analista: hallazgo, evidencia (comando + salida real), severidad con matriz Li
+  31. Dominar el toolkit de auditoría sin googlear: Get-ADUser -Properties MemberOf,LastLogonDate,PasswordNeverExpires; Get-ADGroupMembe
+  32. Entender Kerberos a nivel práctico: AS-REQ (password a cambio de un TGT), TGS-REQ (TGT a cambio de un ticket de servicio vía SPN) 
+  33. Escenario "dominio desconocido": primer inventario en 60 minutos solo con PowerShell nativo — mapear jerarquía de OUs (Get-ADOrgan
+  34. Dominar LAPS/Windows LAPS: por qué la cuenta de admin local es el objetivo favorito del lateral movement (misma contraseña en cien
+  35. Experimentar el AdminSDHolder: mover un usuario de Domain Admins a una OU con GPO propia y comprobar que la GPO no le aplica; ente
+  36. Habilitar y usar la papelera de AD: Enable-ADOptionalFeature "Recycle Bin Feature" -Scope ForestOrConfigurationSet; luego borrar u
+  37. Aplicar Fine-Grained Password Policies (PSO) donde una política global no sirve: admins con 20+ caracteres y rotación, service acc
+  38. Dominar la arquitectura lógica completa de AD DS: dominio → árbol → bosque (forest), el SID (S-1-5-…: la identidad inmutable del o
+  39. Tener la tabla COMPLETA de Event IDs de gestión de cuentas (con la Advanced Audit Policy habilitada): 4720 creación, 4722 habilita
+  40. Leer y escribir LDAP con soltura: el DN (Distinguished Name) como ruta única del objeto (CN=Juan Perez,OU=Ventas,DC=corp,DC=local)
+  41. Usar ldp.exe (RSAT) y ldapsearch (Linux) contra tu DC: bind anónimo vs. simple vs. SASL, recorrer el tree browser de ldp.exe y lan
+  42. Distinguir LDAP (389 en claro), StartTLS (negociación TLS dentro de 389) y LDAPS (636): por qué el bind simple en claro expone cre
+  43. Construir filtros LDAP de memoria: igualdad (objectClass=user), AND (&(department=Ventas)(mail=*)), OR (|(a)(b)), NOT (!(...)), wi
+  44. Entender AD Trusts: intraforest (parent-child, automático y transitivo), external, forest trust y selective authentication; SID fi
+  45. Troubleshooting estándar de bind: error 49 (credenciales inválidas: revisar formato UPN vs. DN del bind, estado de la cuenta, pass
+  46. Publicar la mini-guía "LDAP para analistas IAM": anatomía de un DN comentada, cheatsheet de filtros probados en el lab con captura
+  47. Montar AD LDS (Active Directory Lightweight Directory Services) como sandbox LDAP: instalar el rol, crear una instancia con adamin
+  48. Reconocer el ecosistema de directorios más allá de AD DS: AD LDS (LDAP sin dominio), OpenLDAP (open source de referencia), 389 Dir
+  49. Depurar LDAPS de punta a punta: bind simple contra 389 pasa, contra 636 falla. Checklist ordenado: el certificado del DC (Get-Chil
+  50. Crear y administrar en entra.microsoft.com: Users (member vs. guest B2B), Dynamic Groups con reglas de membresía (user.department 
+  51. Configurar Conditional Access (Entra → Protection → Conditional Access): asignaciones (users/groups/cloud apps) + Access controls 
+  52. Implementar PIM (Eligible = asignación que exige activación temporal vs. Active = permanente; esta última evítala en roles adminis
+  53. Explicar la evaluación de Conditional Access (todas las políticas aplican; ante dos que apliquen, gana la más restrictiva; se eval
+  54. Entregar la documentación de gobernanza del inquilino: tabla de políticas CA con el rationale de negocio de cada una, exportación 
+  55. Montar el laboratorio: inquilino de prueba con Microsoft 365 Developer Program o trial de Entra ID P2 (P2 es el que habilita PIM, 
+  56. Administrar PIM con criterio profesional: role settings por rol (activación de 4-8 h, MFA on activation, approvers del área, justi
+  57. Escenario contractor de 90 días: alta como guest B2B, Access Package con expiración automática a los 90 días y aprobación del líde
+  58. Distinguir External Identities de raíz: B2B guest (colaborador externo con su identidad de SU inquilino: Gmail, otra instancia de 
+  59. Operar Entra Connect con criterio: elegir PHS (password hash sync) vs. PTA (pass-through) vs. federación con sus trade-offs (con e
+  60. Governar el consent y los permisos de apps: App registrations (el desarrollador crea la app y SUS permisos) vs. Enterprise applica
+  61. Operar SSPR end-to-end: política de registro (grupo piloto → todos, registro exigido al iniciar sesión), métodos (app móvil OTP, e
+  62. Dominar la anatomía del tenant y la delegación administrativa: dominios personalizados vs. el predeterminado (*.onmicrosoft.com), 
+  63. Completar el mapa híbrido y de dispositivos: Entra Connect Sync vs. Entra Cloud Sync (el agente ligero moderno basado en Microsoft
+  64. Operar Microsoft Graph con soltura: endpoint https://graph.microsoft.com/v1.0, verbos GET/POST/PATCH/DELETE, payloads JSON y el JW
+  65. Dominar OData: $filter, $select, $top, $orderby y $count (con header ConsistencyLevel: eventual para queries avanzadas sobre el di
+  66. Argumentar el riesgo de un Service Principal con Directory.ReadWrite.All (application): es god-mode sin MFA, sin Conditional Acces
+  67. Construir y documentar consultas de saneamiento: asignaciones de roles obsoletas (GET /roleManagement/directory/roleAssignments cr
+  68. Tener listo el toolkit del SDK: Install-Module Microsoft.Graph; Connect-MgGraph -Scopes "User.Read.All","AuditLog.Read.All"; Get-M
+  69. Auditoría programática del inquilino: script re-ejecutable que reporte (1) Service Principals cuya última rotación de credenciales
+  70. Dominar el SDK de PowerShell: Connect-MgGraph -Scopes con permisos mínimos por operación (jamás consent de todo el paquete), Get-M
+  71. Operar a escala sin morir en el intento: -All para paginación completa, -PageSize y el manejo manual de @odata.nextLink en Invoke-
+  72. Saber responder "¿quién creó esta cuenta y quién la metió en ese grupo?" usando la API de auditoría: GET /v1.0/auditLogs/directory
+  73. Publicar la mini-librería Graph-IAM con 5 scripts versionados en el repo: inventario de usuarios con estado MFA, memberships de un
+  74. Interiorizar la idempotencia y la seguridad de escritura en Graph: una automatización re-ejecutada NO debe crear cambios duplicado
+  75. Diferenciar estrictamente: SAML 2.0 (SSO/federación enterprise: aserciones XML firmadas entre IdP y SP), OAuth 2.0 (delegación de 
+  76. Capturar aserciones SAML con SAML Tracer (extensión de navegador), decodificar JWT en jwt.io verificando claims (aud, exp, iss, su
+  77. Responder el caso "el SSO funciona pero la cuenta no existe en la app": autenticación (SAML) y aprovisionamiento (SCIM) son domini
+  78. Publicar la guía técnica del flujo completo: diagrama AuthnRequest → aserción decodificada (claims, firma, Audience), el POST /Use
+  79. Dominar la anatomía SAML: IdP vs. SP, AuthnRequest, NameID (formato emailAddress/unspecified), Audience Restriction (debe coincidi
+  80. Entender la federación como red de confianza: Home Realm Discovery (el dominio del correo decide a qué IdP redirigir), SP-initiate
+  81. Laboratorio: federar una app de prueba (samltest.id, o BookStack/Wiki.js self-hosted) con tu Entra u Okta de desarrollo; login exi
+  82. Dominar los flujos OAuth 2.0/OIDC y su caso de uso exacto: authorization code + PKCE (el estándar para apps web y SPA — PKCE cierr
+  83. Administrar los tokens y la sesión como operación: el access token (vida corta, NO revocable — la defensa es su expiración), el re
+  84. Saber elegir el protocolo por integración con una matriz de decisión: ¿OIDC si la app lo soporta? (moderno, menos XML, claims flex
+  85. Dominar el mapping de claims y atributos: qué viaja en el token (claims de Entra configurables por app: grupos, department, employ
+  86. Governar el parque de integraciones como inventario vivo: cada app federada con su dueño, protocolo, certificado de firma (fecha d
+  87. Completar el mapa de protocolos con los heredados y los criptográficos: WS-Federation (el SSO de la era .NET — reconocerlo en inte
+  88. Redactar el procedimiento "Enterprise Application Onboarding" completo (el ciclo de vida de una integración, no solo el registro):
+  89. Clasificar factores: algo que sabes (password/PIN), tienes (TOTP RFC 6238, push, FIDO2 security key/passkey) o eres (biometría). M
+  90. Analizar el MFA fatigue (bombardeo de push hasta que la víctima aprueba) y sus defensas: number matching en Microsoft Authenticato
+  91. Configurar Entra MFA: Authentication methods policy (Entra → Protection → Authentication methods): habilitar Microsoft Authenticat
+  92. Laboratorio FIDO2: registrar una passkey (llave YubiKey o la del navegador/teléfono) en tu inquilino, iniciar sesión solo con ella
+  93. Bloquear legacy authentication: los protocolos básicos (POP/IMAP/SMTP AUTH y clientes "Other clients") no pueden hacer MFA y son e
+  94. Diseñar la política MFA de una empresa de 500 usuarios: MFA obligatorio para todos con step-up por riesgo (CA), métodos permitidos
+  95. Preparar la respuesta a "¿MFA es infalible?": no — phishing AiTM (Evilginx roba cookies de sesión), SIM swap, fatigue y token thef
+  96. Manejar NIST SP 800-63-4 (Digital Identity Guidelines, revisión 2025 — la versión vigente que reemplazó a la 800-63B): los niveles
+  97. Entender Windows Hello for Business (WHfB): autenticación asimétrica ligada al hardware (TPM) — el usuario se autentica al DEVICE 
+  98. Diseñar MFA para las poblaciones que NO son personas de oficina: cuentas compartidas de planta (workshop floor, laboratorios) — id
+  99. Diseñar el re-registro seguro de MFA (la puerta trasera favorita): el usuario perdió el teléfono y pide reset de métodos. El ataqu
+  100. Completar el arsenal de autenticación moderna de Entra: Temporary Access Pass (TAP — el pase temporal con el que se hace onboardin
+  101. Distinguir Birthright access (se asigna automáticamente por la condición de empleo: correo, intranet, carpetas del equipo — cero t
+  102. Diseñar el Joiner: pre-boarding D-5 (cuenta creada y lista antes del día 1), accesos por rol estándar del puesto + paquete de onbo
+  103. Operar el Mover como evento de dos pasos: revocación delta del rol anterior + asignación del rol nuevo en la misma ventana. Cubrir
+  104. Ejecutar el Leaver total: deshabilitar (no borrar: preservar el objeto para auditoría y reingresos), transferir ownership de datos
+  105. Laboratorio SCIM 2.0: montar un endpoint SCIM de prueba (validador público tipo scim.dev o un mock con RequestBin) y capturar el P
+  106. Definir SLAs medibles de JML acordados con el negocio (ejemplo: Joiner listo el D0, Mover resuelto en 5 días, Leaver deshabilitado
+  107. Publicar la matriz de ciclo de vida por población (empleado, contractor, tercero/B2B, service account, cuenta de emergencia): quié
+  108. Interiorizar el HRIS como fuente autoritativa y su contrato de datos: qué atributos llegan del HR (employeeId, workerType, departm
+  109. Ejecutar la reconciliación programada (el detector de drift del ciclo de vida): job que compara HR vs. AD vs. Entra vs. apps clave
+  110. Diseñar el ciclo de vida de contractors y terceros (la población con mayor riesgo real): sponsor interno como dueño (no un manager
+  111. Tener el diseño del "Day-1 perfecto" listo: la persona llega y TODO funciona — cuenta activa con MFA pre-inscrito o flujo de prime
+  112. Automatizar el JML con Entra Lifecycle Workflows (la automatización NATIVA — requiere licencia Entra ID Governance): workflows con
+  113. Definir el alcance completo de la higiene IAM: cuentas dormidas/inactivas, PasswordNeverExpires sin justificación, administradores
+  114. Ejecutar el barrido de cuentas inactivas SIN falsos positivos: Search-ADAccount -AccountInactive -TimeSpan 90.00:00:00 como punto 
+  115. Barrido de PasswordNeverExpires con criterio de negocio: enumerar (Search-ADAccount -PasswordNeverExpires), separar por clase (ser
+  116. Barrido de privilegio administrativo: Domain Admins (el objetivo: <5 y solo Tier 0 real), administradores locales (LAPS para el re
+  117. Gestionar la lista de EXCLUSIONES como artefacto vivo (no como excusa): cada exclusión del barrido con dueño, justificación, evide
+  118. Barrido de cuentas NUNCA usadas y de reingresos: Get-ADUser -Filter con LastLogonDate nulo o creation date >90 días sin logon (la 
+  119. Diseñar la campaña trimestral de higiene como PROCESO (no como heroísmo): el calendario rotativo (mes 1: dormidas, mes 2: PNE + pr
+  120. Saber qué NO es higiene (el límite con otros dominios): el password de service account en texto plano en un script NO se arregla c
+  121. Preparar "¿por dónde empezarías en un AD nunca gobernado de 5.000 usuarios?": la respuesta en capas con quick wins primero: (1) hi
+  122. Publicar el DASHBOARD de higiene del lab: 4 semanas consecutivas de datos, hallazgos por clase con tendencia, exclusions vencidas 
+  123. Madurar por niveles: Read-Only (consultas y reportes manuales) → Reporting (exportaciones periódicas CSV/JSON) → Comparación de fu
+  124. Cruzar un CSV de RRHH contra el directorio: Import-Csv hr.csv vs. Get-ADUser -Filter * -Properties mail,employeeID con Compare-Obj
+  125. Explicar por qué -WhatIf/-Confirm, Start-Transcript y logs de auditoría son innegociables antes de cualquier cambio destructivo: e
+  126. Repositorio de scripts modulares y documentados: estructura por carpetas (01-Inventory, 02-Compare, 03-Report, 04-Remediate), cada
+  127. Dominar el pipeline híbrido AD + Entra: Get-ADUser / Get-ADGroupMember del lado on-prem; Get-MgUser, Get-MgGroupMember e Invoke-Mg
+  128. Automatizar el informe semanal de higiene IAM: (1) cuentas inactivas 90+ días, (2) PasswordNeverExpires sin tag de excepción, (3) 
+  129. Conocer el ecosistema de módulos PowerShell de identidad y su deprecación: MSOnline y AzureAD (deprecados, mueren los endpoints an
+  130. Escribir PowerShell de producción: [CmdletBinding(SupportsShouldProcess)] para -WhatIf/-Confirm gratis en scripts propios, param()
+  131. Montar app-only con certificado: registrar la app en Entra, generar el certificado (New-SelfSignedCertificate o el de la CA intern
+  132. Operar, no solo escribir: el reporte semanal de higiene corriendo DESATENDIDO — Register-ScheduledTask (o cron en Linux) que ejecu
+  133. Desarrollar el mismo músculo en Python para proyectos de auditoría y gobierno: csv/json/datetime/re para procesar inventarios, pan
+  134. Memorizar y usar la cadena de diagnóstico: Identidad (¿existe? ¿activa? ¿bloqueada?) → Grupo/Rol (¿membresía esperada?) → Asignaci
+  135. Investigar con la fuente correcta: fallos de CA (Entra sign-in logs: pestaña Conditional Access con la política aplicada y el cont
+  136. Estructurar la respuesta a "un usuario no puede entrar a la app web corporativa, ¿qué haces?": (1) reproducir con los datos del us
+  137. Playbooks de resolución documentados para 5 escenarios reales: usuario sin acceso a app SAML, loop de MFA, usuario fuera del grupo
+  138. Entrenar la lectura de sign-in logs como un profesional: error 50126 (credenciales inválidas), 53003 (bloqueado por CA), 50076 (MF
+  139. Adoptar la bitácora de troubleshooting como hábito profesional: cada caso con timeline, hipótesis probadas y descartadas, causa ra
+  140. Armar el árbol de fallos de MFA completo: el push no llega (cobertura, cambio de número no actualizado, cuenta en otro device), el
+  141. Diagnosticar el grupo dinámico que nunca procesa: la regla sintáctica válida pero semánticamente rota (user.department -eq "IT" cu
+  142. Resolver el ticket clásico "me desloguean cada 5 minutos": las causas ordenadas por frecuencia — CA con sign-in frequency control 
+  143. Tener 3 historias de troubleshooting PERFECTAS con estructura STAR: (síntoma en una frase) → (diagnóstico: fuentes consultadas en 
+  144. Diferenciar los CINCO registros de Entra que resuelven incidencias distintas: Sign-in logs (¿quién intentó entrar y con qué result
+  145. Definir los KPIs del ciclo de vida con fórmula exacta: % Joiners con acceso completo el D1 (fecha HRIS vs. fecha de última asignac
+  146. Definir los KPIs de gobernanza: cobertura de campañas (% de población certificada sobre la planeada), tasa de revocación real (dec
+  147. Definir los KPIs técnicos del programa: % de cuentas con MMA/MFA fuerte, % de administradores en JIT (PIM) vs. permanente (la meta
+  148. Declarar la FUENTE de cada métrica antes de prometerla: dónde nace el dato exacto (HRIS API, timestamps de AD, sign-in logs, herra
+  149. Redactar el reporte ejecutivo mensual de IAM de UNA página: 5 métricas con semáforo y tendencia (mini-sparklines), los 3 riesgos d
+  150. Manejar los modelos de madurez como herramienta de negociación: ubicar el programa en la escala (ad-hoc → repeatable → defined → m
+  151. Medir TU propio trabajo como analista (la scorecard personal): tickets resueltos con SLA, hallazgos de higiene cerrados, campañas 
+  152. Preparar "¿cómo demuestras el valor de IAM al negocio?" con los tres argumentos cuantificados: RIESGO (hallazgos evitados, accesos
+  153. Publicar el TABLERO de métricas del lab: hoja de cálculo con las 10 métricas del programa (lifecycle, gobernanza y técnicas), sus 
+  154. Manejar los enfoques de role engineering: top-down (partir de funciones de negocio: "Analista de Cartera", "Coordinador de Compras
+  155. Diseñar la jerarquía de roles: business roles (reflejan puestos) → functional roles (capacidades transversales: "Aprobador de Comp
+  156. Construir la matriz rol ↔ entitlements en hoja de cálculo para un área real o ficticia: rol "Analista de Nómina" → grupos AD (GG-N
+  157. Construir la matriz SoD en paralelo al modelo: enumerar las toxic combinations por proceso (purchase-to-pay: crear proveedor ≠ apr
+  158. Role mining manual con PowerShell: extraer memberships por departamento (Get-ADUser -LdapFilter "(department=Nómina)" -Properties 
+  159. Implementar el modelo en Entra ID: grupos de rol con naming documentado, asignación por dynamic group (atributo department) para r
+  160. Ejecutar un piloto de 4 semanas en un departamento: cargar el modelo, medir tiempo de onboarding antes/después, contar tickets de 
+  161. Paquete "Role Model v1.0" completo: matriz rol ↔ entitlements, matriz SoD, convención de nombres, owners por rol, proceso de creac
+  162. Saber cuándo NO modelar un rol: acceso que tiene UNA persona con necesidad real (el analista del sistema X heredado) NO se convier
+  163. Ejecutar la sesión de validación de roles con dueños: agendar 45 min por rol, presentar la propuesta (definición, entitlements, po
+  164. Governar el ciclo de vida del ROL mismo (no solo del usuario): quién puede proponer un rol nuevo (solicitud con caso de uso y pobl
+  165. Preparar la defensa completa de 90 segundos a "¿cómo atacas el privilegio acumulado en una empresa?": (1) modelo de roles estándar
+  166. Entender el role mining como problema de compresión: 5.000 usuarios × 10.000 entitlements es una matriz dispersa; el rol ES una co
+  167. Ejecutar el mining manual de punta a punta con herramientas de analista: exportar memberships (Get-ADUser con MemberOf o el CSV de
+  168. Manejar las métricas de calidad del modelo como profesional: coverage (% de accesos explicados por roles — meta >70-80%), role exp
+  169. Construir primero el CATÁLOGO DE ENTITLEMENTS (el prerequisito que todos se saltan): cada entitlement con ID técnico, descripción 
+  170. Diagnóstico y tratamiento del anti-patrón "role per person": síntomas (más roles que usuarios, roles con un miembro, roles sin due
+  171. Dominar la regla de diseño birthright vs. solicitable: birthright cuando el acceso es PREDECIBLE por el puesto (todo analista de n
+  172. Correr el caso híbrido completo sobre el lab: (1) mining bottom-up del export, (2) validar los 5 mejores candidatos de rol en sesi
+  173. Saber cómo hacen el mining las HERRAMIENTAS reales (para hablar con propiedad en demos y proyectos): SailPoint (role mining con cl
+  174. Preparar el monólogo de 2 minutos "mi método de role engineering": (1) catálogo de entitlements primero, (2) mining bottom-up para
+  175. Definir la cadena de granting: Request (el usuario pide vía catálogo) → Approval (aprueba quien corresponde) → Provisioning (lo ej
+  176. Atribuir aprobaciones al dueño correcto: el jefe directo aprueba accesos genéricos del rol; el data owner / system owner aprueba a
+  177. Implementarlo con tooling real: Entra Entitlement Management (Access Package: política de quién puede pedir, aprobador, duración) 
+  178. Gestionar excepciones sin matar el control: toda excepción lleva vencimiento (90 días máx), doble aprobación (dueño + seguridad), 
+  179. Garantizar evidencia de auditoría: cada grant responde quién, qué, por qué (justificación de negocio), quién aprobó y cuándo; la e
+  180. Diseñar el self-service con límites: qué paquetes son auto-solicitables (accesos de bajo riesgo) vs. requieren doble aprobación, l
+  181. Redactar SOP-IAM-002-Granting: flujo diagramado (request → approval → provisioning → verification), matriz RACI, SLA por tipo de a
+  182. Curar el catálogo de acceso solicitable (requestable): qué ENTRA (accesos estándar, repetibles, de riesgo medio con aprobación cla
+  183. Hacer del acceso temporal el DEFAULT para lo no-birthright: Access Packages con expiración obligatoria (7/30/90 días según critici
+  184. Diseñar el flujo del acceso de emergencia fuera de horas (la madrugada del despliegue): canal de solicitud (teléfono + ticket post
+  185. Operar el ciclo completo de una solicitud de acceso como analista (los 10 pasos auditables): identificar quién solicita y PARA QUI
+  186. Definir el deprovisioning TOTAL como checklist: cuenta AD deshabilitada, Entra bloqueado, sesiones/tokens revocados, licencias lib
+  187. Diseñar la revocación de emergencia (kill switch) para terminación hostil o cuenta comprometida: en paralelo — Disable-ADAccount, 
+  188. Correr el drill de revocación contra el lab y medirte: tiempo desde "notificación" hasta verificación final (objetivo < 30 minutos
+  189. Entender sesiones y tokens: quitar a alguien de un grupo NO expulsa su sesión abierta; los access tokens viven en el cliente hasta
+  190. Verificar post-revocación como paso obligatorio del proceso: intento de login (falla esperada), apps con SSO de sesión larga (cook
+  191. Montar el mini-programa de métricas de revocación: % de leavers revocados dentro del SLA, tiempo medio de revocación, residuos det
+  192. Cazar los residuos de acceso que sobreviven al offboarding clásico: tokens OAuth concedidos por el usuario (Enterprise apps → user
+  193. Ejecutar el "revoke audit" del lab: crear un usuario de prueba, asignarle 6 clases de acceso (grupo AD, licencia Entra, app SaaS p
+  194. Diseñar el offboarding EXTENDIDO del administrador: además del estándar — transferir/tirar sus delegaciones de AD (delegation perm
+  195. Definir la política deshabilitar vs. eliminar con la retención forense: deshabilitado 30-90 días (el mailbox en litigation hold si
+  196. Definir la campaña de certificación: alcance (población/entitlements/sistemas), frecuencia (trimestral para accesos críticos, anua
+  197. Ejecutar en Entra ID: crear una Access Review sobre un grupo crítico (Domain Admins o un grupo de aplicación): reviewers seleccion
+  198. Conocer el modelo IGA de certificaciones (SailPoint): manager campaigns (certificas los accesos de tus reportes directos), owner/t
+  199. Combatir el rubber-stamping (aprobar por inercia): carga limitada por reviewer, justificación obligatoria para accesos críticos, s
+  200. Focalizar campañas en toxic combinations: extraer los cruces SoD del modelo de roles y certificarlos primero (quién tiene ambas mi
+  201. Simular una campaña completa con 3 grupos y 12 usuarios ficticios (una hoja de cálculo sirve): cargar accesos, decisiones por revi
+  202. Publicar el mini-programa de certificaciones: calendario anual (Q1: Tier 0, Q2: financiero, Q3: ingeniería, Q4: todos los roles), 
+  203. Distinguir los tipos de campaña y cuándo toca cada una: manager review (membresías de sus reportes — trimestral), entitlement owne
+  204. Diseñar la experiencia del reviewer como producto: cada línea de certificación con CONTEXTO real (última vez usado — datos de sign
+  205. Decidir el default del cierre con criterio: default deny (lo no certificado se revoca) — estricto, correcto para accesos críticos,
+  206. Ejecutar la campaña de service accounts (la que nadie quiere): reviewer = dueño de la APLICACIÓN (no el manager — el manager no sa
+  207. Preparar "¿cómo evitas que las campañas sean un trámite?": (1) carga limitada (<50 líneas por reviewer), (2) contexto por entitlem
+  208. Interiorizar el stack PAM: credential vaulting (la bóveda guarda la clave y el humano jamás la ve), checkout con aprobación, rotac
+  209. Documentar el procedimiento break-glass completo: cuentas de emergencia selladas (password en bóveda PAM o envelope splitting entr
+  210. Explicar la arquitectura de un PAM: bóveda de credenciales, flujo de checkout (solicitar → aprobar → obtener credencial temporal →
+  211. Comparar con criterio: CyberArk PAM Self-Hosted (estándar de mercado: vaulting + PSM/proxy de sesión), BeyondTrust Password Safe/R
+  212. Implementar JIT administration con Entra PIM: convertir asignaciones permanentes de Global Administrator en elegibles (activación 
+  213. Migrar service accounts a bóveda: inventariar (dueño, dependencias, última rotación), ingerir las credenciales al PAM, romper las 
+  214. Responder por qué "cambiar el password del admin cada 90 días" NO es PAM: passwords compartidos por el equipo, reuse en N sistemas
+  215. Interiorizar Just-In-Time como filosofía (no feature): el privilegio NO vive permanentemente en ninguna identidad humana — se acti
+  216. Onboarding completo de un recurso al PAM en el lab: inventariar las cuentas target (del asset: Windows, Linux, base de datos), ing
+  217. Operar la grabación de sesiones con criterio forense: qué se captura (video/keystrokes/comandos ejecutados, por protocolo), retenc
+  218. Extender PAM al mundo cloud y DevOps: credenciales cloud (AWS access keys → roles con STS en lugar de users con keys), secretos de
+  219. Planificar la adopción de PAM en una empresa que resiste (el equipo de TI que lo vive como desconfianza): el plan de olas con quic
+  220. Anatomía de One Identity Safeguard: la appliance (hardware o virtual) con dos caras — Safeguard for Privileged Sessions (SPS: el p
+  221. Montar el flujo Safeguard hands-on (trial de One Identity o el lab del partner): dar de alta un asset Windows + su admin local, ha
+  222. Anatomía de CyberArk PAM: la Digital Vault / EPV (la bóveda con los safes por tipo de cuenta), el CPM (Central Policy Manager: la 
+  223. Anatomía de BeyondTrust: Password Safe (vaulting + rotación + descubrimiento con la curva más suave del mercado) y Remote Support 
+  224. Construir TU tabla de selección con recomendaciones por caso: banco regulado on-prem (CyberArk: compliance pesado, madurez, grabac
+  225. Dominar la inyección de credenciales y el broker de sesión como concepto central del PAM moderno: el humano JAMÁS ve el password (
+  226. Operar el discovery de cuentas privilegiadas: cómo el PAM escanea (AD: miembros de grupos admin, admins locales por GPO; Unix: sud
+  227. Diseñar el dual control (two-man rule) para las cuentas más sensibles: la cuenta break-glass del dominio o el rol de producción cr
+  228. Preparar el caso "cliente con 40 Domain Admins y passwords compartidos": el plan de 90 días con olas: (1) discovery + owners (sema
+  229. Entregar el mini-proyecto PAM del lab: 5 cuentas de 3 tipos (Windows admin, Linux root, service account) ingeridas y rotadas en la
+  230. Completar el mapa con Delinea (ex-Thycotic): Secret Server (la bóveda con discovery de cuentas, rotación programada y check-out co
+  231. Montar el dev org gratis en developer.okta.com: crear usuarios y grupos, agregar una app por SAML u OIDC (SWA/Bookmarks o una app 
+  232. Dominar el Okta System Log (Reports → System Log): filtrar por eventType (user.authentication.auth_via_mfa, user.session.start, us
+  233. Demo documentada end-to-end: crear usuario en Okta → SCIM lo provisiona en la app de prueba → login SSO exitoso → deactivate en Ok
+  234. Explorar Universal Directory: el perfil de usuario base, los mappings de atributos por app (atributo origen en Okta → atributo des
+  235. Configurar authentication policies y adaptive MFA: sign-on policy con factores exigidos por grupo, riesgo contextual (IP anonymize
+  236. Manejar el ciclo de vida en Okta: estados del usuario (Staged → Pending Activation → Active → Suspended → Deactivated), asignación
+  237. Troubleshooting Okta guiado: (1) SSO falla tras expirar o rotar el certificado SAML de la app (revisar la rotación de keys en la i
+  238. Ubicar Okta en el landscape SIN inflarlo: es un IdP/Access Management excelente (Universal Directory, policies, provisioning SCIM,
+  239. Explorar Okta Workflows (o diseñar el flujo completo en papel): el offboarding automatizado — trigger (user.lifecycle.deactivate) 
+  240. Governar los roles admin de Okta: Super Admin (dueño: máximo 2-3 personas, con FIDO2 exigido y IP allowlist de la consola), Org Ad
+  241. Extraer el System Log vía API para el SOC: GET /api/v1/logs con filtros por eventType (user.authentication.auth_via_mfa, user.sess
+  242. Estudiar y presentar el caso Okta 2022 como lesson learned: compromiso del panel de soporte de un tercero → acceso a inquilinos de
+  243. Comprender la arquitectura IGA: HRIS como authoritative source (Workday/SAP SuccessFactors) → Identity Cube en SailPoint (Identity
+  244. Entender los motores de gobernanza: role mining (agrupar entitlements comunes para proponer roles), Access Request Center con fluj
+  245. Diagramas de arquitectura documentados: flujo HR → IGA → provisioning a targets, resolución de conflictos (identidad duplicada, mú
+  246. Interiorizar el modelo de entitlements: cuentas → entitlements (grupo, rol de app, permiso granular) → roles, con dueño, criticida
+  247. Recorrer SailPoint de primera mano: solicitar la demo/trial de Identity Security Cloud (o estudiar la documentación pública + vide
+  248. Posicionar Saviynt frente a SailPoint: Saviynt vende plataforma unificada (IGA + control de apps cloud + librería de riesgo/SoD ou
+  249. Ejercicio de selección para una empresa de 5.000 usuarios con SAP + AD + Entra + SaaS: criterios comparados (integraciones nativas
+  250. Distinguir SailPoint IdentityIQ de Identity Security Cloud (antes IdentityNow): IIQ es el stack on-prem Java (compliance pesado, c
+  251. Entender los conectores como el verdadero costo del IGA: directores (AD/LDAP, Entra), HR (Workday/SuccessFactors vía archivo o API
+  252. Trazar el ciclo de vida de un Joiner a través del IGA (simulado con documentación si no hay trial): HR feed crea la Identity (con 
+  253. Manejar la correlación de identidades como el problema que es: una identidad corporativa con MÚLTIPLES cuentas (AD, Entra, SAP, Sa
+  254. Montar la gobernanza alrededor del IGA (la pieza invisible): comité de accesos con cadencia real (roles nuevos, excepciones crític
+  255. Manejar el vocabulario COMPLETO de plataforma IGA como checklist de evaluación: authoritative source, identity correlation, aggreg
+
+Total ids: 411 | items: 0
+text: fields: 373
+label: fields: 373
