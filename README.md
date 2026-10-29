@@ -1,21 +1,63 @@
-DIEGO YONOFF - PORTFOLIO
-=========================
 
-https://dieg0y.github.io/
+# Diego Yonoff — IAM & Identity Security Portfolio
 
-Hey, welcome! This is my personal portfolio as a SOC Analyst. Take a look around and you'll find:
+**Systems Engineering student | Aspiring IAM Analyst | Identity Security**
 
-- Who I am and what I focus on (Security Operations, Blue Team)
-- My experience and certifications
-- My projects
-- A blog with writeups and notes on what I'm learning along the way
-  (SIEM, KQL, MITRE ATT&CK, incident response, and more)
+Welcome to my technical portfolio. I am a Systems Engineering student at Universidad Simón Bolívar in Colombia, developing a career focus in Identity and Access Management (IAM), identity governance, and identity security.
 
-Feel free to explore — I try to keep things practical and hands-on, not just theory.
+## Professional Focus
 
-Reach out anytime:
-diegojose0405@gmail.com
-github.com/dieg0y
+My current learning priorities include:
+
+- Identity lifecycle management (Joiner–Mover–Leaver)
+- Active Directory and Microsoft Entra ID fundamentals
+- Role-Based Access Control (RBAC) and least privilege
+- Access reviews and identity governance
+- Authentication, SSO, and identity federation concepts
+- Identity automation and auditing
+- Identity-related security monitoring
+
+I complement my IAM focus with broader cybersecurity and software development knowledge.
+
+## Projects
+
+My projects demonstrate practical learning across cybersecurity, networking, authentication, and software development.
+
+- [VaultNotes](https://github.com/dieg0y/VAULTNOTES) — offline-first cybersecurity knowledge platform with IAM and SOC learning resources.
+- [IP Subnetting Tool](https://github.com/dieg0y/IPsubnetting) — Python CLI tool for IPv4 subnet calculations.
+- [Plazoleta Users API](https://github.com/dieg0y/plazoleta-usuarios) — academic user authentication microservice using Spring Security and JWT.
+- [Plazoleta Restaurant API](https://github.com/dieg0y/plazoleta-restaurante) — related academic microservice with authenticated operations.
+
+Each project should be evaluated according to its implementation, documentation, and demonstrated behavior.
+
+## Technical Stack
+
+**Programming and development**
+- Python
+- Java
+- TypeScript
+- React
+- Git and GitHub
+
+**Cybersecurity and identity — learning focus**
+- IAM fundamentals and access governance
+- RBAC and least privilege
+- Authentication and JWT
+- Active Directory and Microsoft Entra ID concepts
+- SOC and Blue Team fundamentals
+
+## Education
+
+**Systems Engineering**  
+Universidad Simón Bolívar — Colombia
+
+## Contact
+
+- Portfolio: https://dieg0y.github.io/
+- GitHub: https://github.com/dieg0y
+- LinkedIn: https://www.linkedin.com/in/diegoyonoff/
+- Email: diegojose0405@gmail.com
 
 ---
-Built with AI assistance, but every word and idea here is mine.
+
+This portfolio is a work in progress as I build and document practical IAM and identity security projects.
