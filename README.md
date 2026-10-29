@@ -1,55 +1,53 @@
-
 # Diego Yonoff — IAM & Identity Security Portfolio
 
-**Systems Engineering student | Aspiring IAM Analyst | Identity Security**
+**Junior IAM Analyst | Identity & Access Management | Identity Security**
 
-Welcome to my technical portfolio. I am a Systems Engineering student at Universidad Simón Bolívar in Colombia, developing a career focus in Identity and Access Management (IAM), identity governance, and identity security.
+Source code of my personal portfolio site: **https://dieg0y.github.io/** — built for international recruiters and IAM hiring managers, presenting my identity-focused profile with public, verifiable evidence.
 
-## Professional Focus
+## Positioning
 
-My current learning priorities include:
+- **Main focus:** Identity & Access Management — identity lifecycle (Joiner–Mover–Leaver), access governance (RBAC, SoD, access reviews, least privilege), Microsoft Entra ID / Active Directory, identity protocols (SAML, OIDC, OAuth 2.0, SCIM), and identity security (ITDR).
+- **Complementary base:** SOC / Blue Team training (SIEM, KQL, incident investigation) — presented strictly as a complement that supports identity threat detection, never as the primary specialty.
+- **Location / availability:** Barranquilla, Colombia — open to **remote** Junior IAM Analyst roles worldwide.
 
-- Identity lifecycle management (Joiner–Mover–Leaver)
-- Active Directory and Microsoft Entra ID fundamentals
-- Role-Based Access Control (RBAC) and least privilege
-- Access reviews and identity governance
-- Authentication, SSO, and identity federation concepts
-- Identity automation and auditing
-- Identity-related security monitoring
+## Site structure (React + Vite + TypeScript + Tailwind)
 
-I complement my IAM focus with broader cybersecurity and software development knowledge.
+```
+src/pages/         Home · About · Experience · Skills · Certifications · Projects · Blog · Post
+src/data/          projects.ts (real repositories & honest statuses)
+                   roadmap.ts  (34-phase IAM roadmap & 10-project portfolio plan — real data
+                                extracted from VAULTNOTES' roadmapData.ts)
+src/components/    Header · Footer · MenuOverlay · ArticleCard · FadeImage · AuthorInfo …
+public/            cv-diego-yonoff.pdf · robots.txt · sitemap.xml
+```
 
-## Projects
+The site uses `HashRouter`, so all routes resolve under `https://dieg0y.github.io/#/…` and are listed in `public/sitemap.xml`.
 
-My projects demonstrate practical learning across cybersecurity, networking, authentication, and software development.
+## Evidence model (important)
 
-- [VaultNotes](https://github.com/dieg0y/VAULTNOTES) — offline-first cybersecurity knowledge platform with IAM and SOC learning resources.
-- [IP Subnetting Tool](https://github.com/dieg0y/IPsubnetting) — Python CLI tool for IPv4 subnet calculations.
-- [Plazoleta Users API](https://github.com/dieg0y/plazoleta-usuarios) — academic user authentication microservice using Spring Security and JWT.
-- [Plazoleta Restaurant API](https://github.com/dieg0y/plazoleta-restaurante) — related academic microservice with authenticated operations.
+This portfolio follows a strict honesty rule:
 
-Each project should be evaluated according to its implementation, documentation, and demonstrated behavior.
+- **Project statuses are real:** `Completed` only with an existing public repository; `In Progress` only when there is a verifiable base (e.g., 50 IAM runbooks shipped inside [VAULTNOTES](https://github.com/dieg0y/VAULTNOTES)); `Planned` for roadmap goals not yet started.
+- **Certifications are labeled honestly:** SC-300 (primary IAM goal — in preparation), SC-200 (complementary — in progress), Cambridge Linguaskill B2 (verified, report included in the site).
+- **No fabricated metrics:** no invented stars, percentages, or progress bars.
 
-## Technical Stack
+## Featured repositories
 
-**Programming and development**
-- Python
-- Java
-- TypeScript
-- React
-- Git and GitHub
+- [VAULTNOTES](https://github.com/dieg0y/VAULTNOTES) — local-first cybersecurity knowledge PWA; its IAM pillar contains the 34-phase/373-item IAM roadmap, 50 operational runbooks, 50 ticket simulations, and a 5-day access review campaign.
+- [plazoleta-usuarios](https://github.com/dieg0y/plazoleta-usuarios) — academic authentication microservice (Spring Security + JWT).
+- [plazoleta-restaurante](https://github.com/dieg0y/plazoleta-restaurante) — academic API with role-based authorization.
+- [IPsubnetting](https://github.com/dieg0y/IPsubnetting) — Python CLI for IPv4 subnet calculations (complementary networking tool).
 
-**Cybersecurity and identity — learning focus**
-- IAM fundamentals and access governance
-- RBAC and least privilege
-- Authentication and JWT
-- Active Directory and Microsoft Entra ID concepts
-- SOC and Blue Team fundamentals
+## Development
 
-## Education
+```bash
+npm install     # or bun install
+npm run dev     # local dev server
+npm run build   # production build (dist/)
+npm run lint    # TypeScript check (tsc --noEmit)
+```
 
-**Systems Engineering**  
-Universidad Simón Bolívar — Colombia
+Deployment is automatic: pushing to `main` triggers the GitHub Actions workflow (`.github/workflows/main.yml`) which builds the site and publishes it to GitHub Pages.
 
 ## Contact
 

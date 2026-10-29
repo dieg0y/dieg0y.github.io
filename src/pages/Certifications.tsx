@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { Award, ArrowUpRight, CheckCircle2, ShieldCheck, ExternalLink, X, FileText } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, ExternalLink, X, FileText, Fingerprint, ShieldCheck, CircleDot } from "lucide-react";
 
 export function Certifications() {
   const [showReportModal, setShowReportModal] = useState(false);
@@ -12,7 +12,7 @@ export function Certifications() {
       <Header />
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -23,73 +23,136 @@ export function Certifications() {
               <span>Professional Credentials</span>
             </div>
             <h1 className="font-serif text-5xl font-medium tracking-tight text-ink md:text-6xl">
-              Certifications & Badges
+              Certifications &amp; Badges
             </h1>
             <p className="mt-4 text-lg text-ink-light leading-relaxed">
-              Official certifications validating SOC operational skills, Microsoft Security stack expertise, and language proficiency.
+              My primary IAM certification goal, complementary security training, and verified language
+              credentials. Nothing is listed as earned without evidence — in-progress goals are labeled as such.
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Cert 1: SC-200 */}
-            <motion.div 
+            {/* Cert 1: SC-300 — primary IAM goal */}
+            <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
+              className="rounded-2xl border-2 border-accent/30 bg-accent/5 p-8 flex flex-col justify-between hover:border-accent transition-all shadow-sm md:row-span-1"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="font-mono text-xs font-semibold px-3 py-1 rounded-full bg-accent text-paper border border-accent">
+                    Primary IAM Goal &bull; In Preparation
+                  </span>
+                  <span className="font-mono text-xs text-ink-light font-semibold">Microsoft</span>
+                </div>
+                <h2 className="font-serif text-3xl font-bold text-ink mb-3">
+                  Microsoft SC-300
+                </h2>
+                <h3 className="font-mono text-sm text-accent font-semibold mb-4">
+                  Identity and Access Administrator Associate
+                </h3>
+                <p className="text-sm text-ink-light leading-relaxed mb-6">
+                  The certification that matches my career focus: implementing and managing identity and
+                  access on the Microsoft stack. I am building the hands-on foundation first (Entra ID,
+                  Active Directory, JML, access reviews — through my{" "}
+                  <a href="https://github.com/dieg0y/VAULTNOTES" target="_blank" rel="noreferrer" className="underline hover:text-accent">
+                    34-phase roadmap
+                  </a>) while studying the official SC-300 curriculum. Exam not scheduled yet — no exam date
+                  is claimed.
+                </p>
+
+                <div className="bg-ink/5 p-4 rounded-xl border border-ink/10 font-mono text-xs text-ink-light space-y-1.5 mb-6">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
+                    <span>Implement identities &amp; governance in Entra ID</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
+                    <span>Implement authentication &amp; access management (SSO, MFA, Conditional Access)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
+                    <span>Manage access control (RBAC, access reviews, PIM concepts)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-ink/10">
+                <a
+                  href="https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-accent hover:underline"
+                >
+                  <span>Microsoft SC-300 Curriculum &amp; Details</span>
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </motion.div>
+
+            {/* Cert 2: SC-200 — complementary */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               className="rounded-2xl border border-ink/10 bg-paper p-8 flex flex-col justify-between hover:border-accent transition-all shadow-sm"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="font-mono text-xs font-semibold px-3 py-1 rounded-full bg-amber-500/10 text-amber-800 border border-amber-500/20">
-                    In Progress
+                  <span className="font-mono text-xs font-semibold px-3 py-1 rounded-full bg-ink/5 text-ink-light border border-ink/15">
+                    Complementary Training &bull; In Progress
                   </span>
                   <span className="font-mono text-xs text-ink-light font-semibold">Microsoft</span>
                 </div>
                 <h2 className="font-serif text-3xl font-bold text-ink mb-3">
                   Microsoft SC-200
                 </h2>
-                <h3 className="font-mono text-sm text-accent font-semibold mb-4">
+                <h3 className="font-mono text-sm text-ink-light font-semibold mb-4">
                   Security Operations Analyst Associate
                 </h3>
                 <p className="text-sm text-ink-light leading-relaxed mb-6">
-                  Studying detection engineering, threat hunting with KQL, and incident response workflows across the Microsoft Defender for Endpoint and Microsoft Sentinel cloud SIEM ecosystem.
+                  Security operations training that complements my IAM focus — useful for identity threat
+                  detection (ITDR) and for understanding what identity attacks look like on the monitoring
+                  side. Studying detection engineering, threat hunting with KQL, and incident response
+                  workflows across Microsoft Defender XDR and Microsoft Sentinel.
                 </p>
 
                 <div className="bg-ink/5 p-4 rounded-xl border border-ink/10 font-mono text-xs text-ink-light space-y-1.5 mb-6">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
+                    <CircleDot className="h-4 w-4 text-accent shrink-0" />
                     <span>Mitigate threats using Microsoft Sentinel</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
+                    <CircleDot className="h-4 w-4 text-accent shrink-0" />
                     <span>Mitigate threats using Microsoft Defender XDR</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
-                    <span>Perform KQL log queries & detection tuning</span>
+                    <CircleDot className="h-4 w-4 text-accent shrink-0" />
+                    <span>Perform KQL log queries &amp; detection tuning</span>
                   </div>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-ink/10">
-                <a 
+                <a
                   href="https://learn.microsoft.com/en-us/credentials/certifications/security-operations-analyst/"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-accent hover:underline"
                 >
-                  <span>Microsoft SC-200 Curriculum & Details</span>
+                  <span>Microsoft SC-200 Curriculum &amp; Details</span>
                   <ArrowUpRight className="h-3.5 w-3.5" />
                 </a>
               </div>
             </motion.div>
 
-            {/* Cert 2: Linguaskill */}
-            <motion.div 
+            {/* Cert 3: Linguaskill — verified */}
+            <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="rounded-2xl border border-ink/10 bg-paper p-8 flex flex-col justify-between hover:border-accent transition-all shadow-sm"
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="rounded-2xl border border-ink/10 bg-paper p-8 flex flex-col justify-between hover:border-accent transition-all shadow-sm md:col-span-2 lg:col-span-1"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -104,7 +167,7 @@ export function Certifications() {
                 <h3 className="font-mono text-sm text-accent font-semibold mb-4">
                   Cambridge Assessment English (Average Score: 172)
                 </h3>
-                
+
                 {/* Score Breakdown Pills */}
                 <div className="grid grid-cols-2 gap-2 font-mono text-xs mb-6">
                   <div className="p-2.5 rounded-lg bg-ink/5 border border-ink/10 flex justify-between items-center">
@@ -126,17 +189,19 @@ export function Certifications() {
                 </div>
 
                 <p className="text-sm text-ink-light leading-relaxed mb-6">
-                  Official Cambridge-certified English proficiency at CEFR B2 level (Listening C1). Validates my capacity to conduct security incident response, write incident triage reports, and communicate seamlessly in international, remote SOC teams.
+                  Official Cambridge-certified English proficiency at CEFR B2 level (Listening C1). Supports
+                  documentation, access-review reporting, and remote collaboration with international IAM and
+                  identity security teams.
                 </p>
 
                 <div className="bg-ink/5 p-4 rounded-xl border border-ink/10 font-mono text-xs text-ink-light space-y-1.5 mb-6">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                    <span>Technical incident reporting & documentation in English</span>
+                    <span>Technical reporting &amp; documentation in English</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                    <span>Fluent verbal and written security communications</span>
+                    <span>Fluent written security/identity communications</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
@@ -146,7 +211,7 @@ export function Certifications() {
               </div>
 
               <div className="pt-4 border-t border-ink/10">
-                <button 
+                <button
                   onClick={() => setShowReportModal(true)}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink text-paper font-mono text-xs font-semibold hover:bg-accent transition-colors shadow-sm"
                 >
@@ -156,6 +221,21 @@ export function Certifications() {
               </div>
             </motion.div>
           </div>
+
+          {/* Honesty note */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="mt-10 rounded-2xl border border-ink/10 bg-ink/5 p-5 flex items-start gap-3"
+          >
+            <ShieldCheck className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+            <p className="font-sans text-sm text-ink-light leading-relaxed">
+              <strong className="text-ink">Honesty note:</strong> I have not earned any technical
+              certification yet. SC-300 and SC-200 are active study goals — the only verified credential on
+              this page is the Cambridge Linguaskill B2 report below.
+            </p>
+          </motion.div>
         </div>
       </main>
 
@@ -227,7 +307,7 @@ export function Certifications() {
               <div className="p-4 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-between mb-6">
                 <div>
                   <span className="font-mono text-xs font-bold text-accent uppercase tracking-wider block">
-                    Average Score & CEFR Level
+                    Average Score &amp; CEFR Level
                   </span>
                   <span className="font-serif text-3xl font-bold text-ink">
                     172 <span className="text-lg font-sans font-normal text-accent">(CEFR Level B2)</span>
@@ -268,7 +348,7 @@ export function Certifications() {
                     <div className="bg-accent h-full w-[82%] rounded-full"></div>
                   </div>
                   <p className="text-[11px] text-ink-light font-sans pt-1">
-                    Can read complex technical documentation, threat intel reports, and SIEM logs accurately.
+                    Can read complex technical documentation, IAM administration guides, and platform logs accurately.
                   </p>
                 </div>
 
@@ -282,7 +362,7 @@ export function Certifications() {
                     <div className="bg-accent h-full w-[75%] rounded-full"></div>
                   </div>
                   <p className="text-[11px] text-ink-light font-sans pt-1">
-                    Can write detailed incident triage writeups, ticket notes, and clear email communications.
+                    Can write detailed access-review reports, runbook documentation, and clear email communications.
                   </p>
                 </div>
 
@@ -296,7 +376,7 @@ export function Certifications() {
                     <div className="bg-ink/60 h-full w-[65%] rounded-full"></div>
                   </div>
                   <p className="text-[11px] text-ink-light font-sans pt-1">
-                    Can communicate operational status and participate effectively in daily standups and SOC handovers.
+                    Can communicate operational status and participate effectively in daily standups and team handovers.
                   </p>
                 </div>
               </div>

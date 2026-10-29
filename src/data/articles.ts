@@ -25,12 +25,12 @@ export interface Article {
 export const defaultAuthor: Author = {
   name: "Diego Yonoff",
   avatar: "",
-  bio: "SOC Analyst with hands-on experience in security monitoring, threat detection, and incident investigation across simulated enterprise environments. Skilled in SIEM analysis, log correlation, and threat intelligence.",
+  bio: "Systems Engineering student focused on Identity & Access Management (IAM): identity lifecycle (JML), access governance (RBAC, SoD, access reviews), Microsoft Entra ID and identity security. Building hands-on evidence through public projects, labs and a 34-phase learning roadmap.",
   github: "https://github.com/dieg0y",
   linkedin: "https://linkedin.com/in/diegoyonoff",
   email: "diegojose0405@gmail.com",
   location: "Barranquilla, Colombia",
-  role: "SOC Analyst"
+  role: "Junior IAM Analyst — Identity & Access Management"
 };
 
 export const initialArticles: Article[] = [

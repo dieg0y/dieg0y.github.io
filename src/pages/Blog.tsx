@@ -5,13 +5,7 @@ import { Footer } from "../components/Footer";
 import { Link, useSearchParams } from "react-router-dom";
 import { initialArticles, Article } from "../data/articles";
 import { FadeImage } from "../components/FadeImage";
-import { 
-  BookOpen, 
-  Search, 
-  Tag, 
-  Clock, 
-  ArrowRight
-} from "lucide-react";
+import { BookOpen, Search, Tag, Clock, ArrowRight, Clock3 } from "lucide-react";
 
 export function Blog() {
   const [searchParams] = useSearchParams();
@@ -46,19 +40,21 @@ export function Blog() {
       <Header />
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          
+
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 border-b border-ink/10 pb-8">
             <div>
               <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-accent mb-3">
                 <BookOpen className="h-4 w-4" />
-                <span>Hands-On & Lab Notes</span>
+                <span>Technical Writeups &amp; Learning Notes</span>
               </div>
               <h1 className="font-serif text-5xl font-medium tracking-tight text-ink sm:text-6xl">
-                Blog, Writeups & Labs
+                Blog, Writeups &amp; Labs
               </h1>
               <p className="mt-3 text-lg text-ink-light max-w-2xl">
-                Blue Team writeups, malware analysis notes, SOC alert investigations, and lab research by Diego Yonoff.
+                Published writeups by Diego Yonoff. The IAM lab series (Entra ID, JML, RBAC, Graph, SSO,
+                SCIM, auditing, ITDR) is in the works — articles appear here only when they are actually
+                written, never before.
               </p>
             </div>
           </div>
@@ -172,12 +168,52 @@ export function Blog() {
                     to={`/post/${art.slug}`}
                     className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-accent group-hover:underline"
                   >
-                    <span>Read Writeup</span>
+                    <span>Read Article</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
               </motion.article>
             ))}
+
+            {/* Upcoming IAM series — clearly marked, NOT an article */}
+            {(selectedTag === "All" || searchQuery === "") && filteredArticles.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.25 }}
+                className="rounded-2xl border-2 border-dashed border-ink/15 bg-transparent p-6 flex flex-col justify-between"
+                aria-label="Upcoming IAM article series"
+              >
+                <div>
+                  <div className="flex flex-wrap items-center gap-2 mb-4">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-ink/5 text-ink-light border border-ink/15 font-mono text-[10px] font-bold uppercase tracking-wider">
+                      <Clock3 className="h-3 w-3" />
+                      Planned series — not published yet
+                    </span>
+                  </div>
+
+                  <h2 className="font-serif text-2xl font-bold text-ink/70 leading-snug mb-3">
+                    IAM Lab Notes (upcoming)
+                  </h2>
+
+                  <p className="text-sm text-ink-light leading-relaxed mb-4">
+                    As the roadmap&rsquo;s portfolio projects come to life, their writeups will land here:
+                    Entra ID administration, JML automation, RBAC &amp; SoD analysis, Microsoft Graph
+                    auditing, SSO/SAML/OIDC labs, SCIM provisioning, and identity threat detection.
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-ink/10">
+                  <Link
+                    to="/projects"
+                    className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-ink-light hover:text-accent"
+                  >
+                    <span>Follow the progress in Projects &amp; Roadmap</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </motion.div>
+            )}
           </div>
 
           {filteredArticles.length === 0 && (
@@ -187,7 +223,6 @@ export function Blog() {
           )}
         </div>
       </main>
-
       <Footer />
     </div>
   );

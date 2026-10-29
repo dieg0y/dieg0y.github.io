@@ -14,7 +14,7 @@ export function Footer() {
               <span className="font-serif text-xl font-semibold tracking-tight text-ink">Diego Yonoff</span>
             </Link>
             <p className="text-xs font-mono text-ink-light">
-              SOC Analyst &bull; Barranquilla, Colombia
+              Junior IAM Analyst &middot; Identity &amp; Access Management &bull; Barranquilla, Colombia
             </p>
           </div>
           
@@ -26,6 +26,7 @@ export function Footer() {
               <Link to="/certifications" className="text-ink-light hover:text-accent transition-colors">Certifications</Link>
               <Link to="/projects" className="text-ink-light hover:text-accent transition-colors">Projects</Link>
               <Link to="/blog" className="text-ink-light hover:text-accent transition-colors">Blog & Writeups</Link>
+              <a href="/cv-diego-yonoff.pdf" download="CV-Diego-Yonoff.pdf" className="text-ink-light hover:text-accent transition-colors">Download CV</a>
             </nav>
 
             <div className="flex items-center gap-2 text-ink-light">
