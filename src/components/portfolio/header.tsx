@@ -28,7 +28,7 @@ function ThemeToggle() {
       type="button"
       aria-label="Toggle dark mode"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      className="rounded-md p-2 text-ink-light transition-colors hover:bg-ink/5 hover:text-ink dark:hover:bg-ink/10 dark:hover:text-ink"
+      className="flex h-11 w-11 items-center justify-center rounded-md text-ink-light transition-colors hover:bg-ink/5 hover:text-ink md:h-9 md:w-9 dark:hover:bg-ink/10 dark:hover:text-ink"
     >
       {mounted && resolvedTheme === "dark" ? (
         <Sun className="h-4 w-4" aria-hidden="true" />
@@ -90,7 +90,7 @@ export function PortfolioHeader() {
         <div className="flex items-center gap-3">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
-              className="rounded-md p-2 text-ink-light transition-colors hover:bg-ink/5 hover:text-ink md:hidden dark:hover:bg-ink/10"
+              className="flex h-11 w-11 items-center justify-center rounded-md text-ink-light transition-colors hover:bg-ink/5 hover:text-ink md:hidden dark:hover:bg-ink/10"
               aria-label="Open navigation menu"
             >
               <Menu className="h-5 w-5" aria-hidden="true" />

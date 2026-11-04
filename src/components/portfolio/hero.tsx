@@ -110,7 +110,7 @@ export function Hero() {
                 ))}
               </dl>
 
-              <div className="relative flex flex-wrap items-center justify-between gap-2 border-t border-[#f2eee6]/10 pb-1 pt-4 font-mono text-[10px] uppercase tracking-wider text-[#f2eee6]/65">
+              <div className="relative flex flex-wrap items-center justify-between gap-2 border-t border-[#f2eee6]/10 pb-2 pt-4 font-mono text-[10px] uppercase tracking-wider text-[#f2eee6]/65">
                 <span>Status · seeking first IAM role</span>
                 <a
                   href={profile.github}
