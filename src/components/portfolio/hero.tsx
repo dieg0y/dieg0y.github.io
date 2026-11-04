@@ -140,8 +140,9 @@ export function Hero() {
             <h1 className="mb-2 font-serif text-4xl font-medium tracking-tight text-ink sm:text-5xl lg:text-6xl">
               {profile.name}
             </h1>
-            <div className="mb-6 text-balance font-mono text-sm font-bold uppercase tracking-wider text-brand">
-              {profile.role} — {profile.focus}
+            <div className="mb-6 space-y-0.5 font-mono text-sm font-bold uppercase tracking-wider text-brand">
+              <p className="text-balance">{profile.role}</p>
+              <p className="text-balance text-ink-light/90">{profile.focus}</p>
             </div>
 
             <p className="mb-6 border-l-2 border-brand py-1 pl-4 text-base leading-relaxed text-ink-light sm:text-lg">

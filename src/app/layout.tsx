@@ -1,26 +1,56 @@
 import type { Metadata } from "next";
-import { DM_Sans, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 
-const playfair = Playfair_Display({
+/* Self-hosted variable fonts (latin subset), downloaded from Google Fonts.
+ * Local files remove the compile-time network dependency that breaks
+ * Turbopack builds when the font cache gets corrupted — and load faster. */
+const playfair = localFont({
   variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  style: ["normal", "italic"],
+  src: [
+    {
+      path: "./fonts/PlayfairDisplay-latin-variable.woff2",
+      weight: "400 900",
+      style: "normal",
+    },
+    {
+      path: "./fonts/PlayfairDisplay-italic-latin-variable.woff2",
+      weight: "400 900",
+      style: "italic",
+    },
+  ],
+  display: "swap",
 });
 
-const dmSans = DM_Sans({
+const dmSans = localFont({
   variable: "--font-dm-sans",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  src: [
+    {
+      path: "./fonts/DMSans-latin-variable.woff2",
+      weight: "100 1000",
+      style: "normal",
+    },
+    {
+      path: "./fonts/DMSans-italic-latin-variable.woff2",
+      weight: "100 1000",
+      style: "italic",
+    },
+  ],
+  display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const jetbrainsMono = localFont({
   variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  src: [
+    {
+      path: "./fonts/JetBrainsMono-latin-variable.woff2",
+      weight: "100 800",
+      style: "normal",
+    },
+  ],
+  display: "swap",
 });
 
 export const metadata: Metadata = {

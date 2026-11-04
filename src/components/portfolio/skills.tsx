@@ -26,7 +26,9 @@ const EVIDENCE_PATTERN = new RegExp(
   "g"
 );
 
-/** Renders an evidence string, turning project names into repo links. */
+/** Renders an evidence string, turning project names into repo links.
+ * The link renders as inline-flex so the name and its external-link icon
+ * never break across lines. */
 function EvidenceText({ text }: { text: string }) {
   const parts = text.split(EVIDENCE_PATTERN);
   return (
@@ -40,14 +42,14 @@ function EvidenceText({ text }: { text: string }) {
                 href={href}
                 target="_blank"
                 rel="noreferrer"
-                className="font-semibold text-brand underline decoration-brand/40 underline-offset-2 transition-colors hover:text-ink hover:decoration-brand"
+                className="inline-flex items-baseline font-semibold text-brand underline decoration-brand/40 underline-offset-2 transition-colors hover:text-ink hover:decoration-brand"
               >
                 {part}
+                <ExternalLink
+                  className="ml-0.5 inline h-3 w-3 shrink-0 self-center text-brand/70"
+                  aria-hidden="true"
+                />
               </a>{" "}
-              <ExternalLink
-                className="inline h-3 w-3 align-[-1px] text-brand/70"
-                aria-hidden="true"
-              />
             </React.Fragment>
           );
         }
