@@ -646,7 +646,7 @@ export const site = {
     { href: "#about", label: "About" },
     { href: "#skills", label: "Skills" },
     { href: "#projects", label: "Projects" },
-    { href: "#experience", label: "Labs & Experience" },
+    { href: "#experience", label: "Experience" },
     { href: "#certifications", label: "Certifications" },
     { href: "#writing", label: "Writing" },
     { href: "#contact", label: "Contact" },

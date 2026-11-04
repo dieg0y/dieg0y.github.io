@@ -35,7 +35,7 @@ export function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-2xl border border-ink/10 bg-[#16130e] p-8 text-[#f2eee6] shadow-2xl sm:p-12"
+          className="relative overflow-hidden rounded-2xl border border-ink/10 bg-[#16130e] p-8 text-[#f2eee6] shadow-2xl dark:border-[#f2eee6]/15 dark:bg-[#241f17] dark:shadow-black/60 sm:p-12"
         >
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -56,9 +56,9 @@ export function Contact() {
             </h2>
             <p className="mb-8 max-w-2xl text-sm leading-relaxed text-[#f2eee6]/75 sm:text-base">
               If your team needs a junior IAM analyst who documents everything,
-              questions his own skill levels, and is already deep in the
-              lifecycle-and-governance problem space — my inbox is open. I
-              respond in English or Spanish, usually within a day.
+              labels every skill claim with its evidence level, and is already
+              deep in the lifecycle-and-governance problem space — my inbox is
+              open. I respond in English or Spanish, usually within a day.
             </p>
 
             <div className="flex flex-wrap items-center gap-3 font-mono text-xs">
@@ -92,7 +92,7 @@ export function Contact() {
               </a>
             </div>
 
-            <p className="mt-8 font-mono text-[11px] uppercase tracking-wider text-[#f2eee6]/50">
+            <p className="mt-8 text-balance font-mono text-[11px] uppercase tracking-wider text-[#f2eee6]/50">
               {profile.availability} · {profile.location} · {profile.timezone}
             </p>
           </div>

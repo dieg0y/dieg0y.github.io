@@ -18,9 +18,9 @@ export function PortfolioFooter() {
               </span>
             </a>
             <p className="font-mono text-xs text-ink-light">{site.identityLine}</p>
-            <p className="max-w-sm font-mono text-[11px] leading-relaxed text-ink-light/80">
+            <p className="max-w-sm font-mono text-xs leading-relaxed text-ink-light">
               Evidence-based portfolio — every skill labeled hands-on, working
-              knowledge, or foundational.
+              knowledge, or foundational, and linked to its repository.
             </p>
           </div>
 

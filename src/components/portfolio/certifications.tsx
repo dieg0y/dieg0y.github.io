@@ -35,7 +35,7 @@ function ScoreBar({
   strong?: boolean;
 }) {
   return (
-    <div className="space-y-1 rounded-lg border border-ink/10 bg-card p-3">
+    <div className="space-y-1.5 py-3.5 first:pt-1 last:pb-0">
       <div className="flex items-center justify-between font-mono text-xs">
         <span className="font-bold text-ink">{label}</span>
         <span className={strong ? "font-bold text-emerald-700 dark:text-emerald-400" : "font-bold text-brand"}>
@@ -52,7 +52,7 @@ function ScoreBar({
           style={{ width: `${percent}%` }}
         />
       </div>
-      <p className="pt-1 font-sans text-[11px] leading-relaxed text-ink-light">{note}</p>
+      <p className="pt-0.5 font-sans text-[11px] leading-relaxed text-ink-light">{note}</p>
     </div>
   );
 }
@@ -64,13 +64,49 @@ function LinguaskillReport({
   open: boolean;
   onClose: () => void;
 }) {
+  const dialogRef = React.useRef<HTMLDivElement>(null);
+
   React.useEffect(() => {
     if (!open) return;
+    const node = dialogRef.current;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    // Move focus into the dialog, lock body scroll behind it
+    node?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const focusables = () =>
+      Array.from(
+        node?.querySelectorAll<HTMLElement>(
+          "a[href], button:not([disabled])"
+        ) ?? []
+      ).filter((el) => el.offsetParent !== null);
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+      previouslyFocused?.focus?.();
+    };
   }, [open, onClose]);
 
   if (!open) return null;
@@ -84,15 +120,24 @@ function LinguaskillReport({
         className="absolute inset-0 cursor-default bg-ink/40 backdrop-blur-sm"
       />
       <motion.div
+        ref={dialogRef}
+        tabIndex={-1}
         initial={{ scale: 0.96, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
         role="dialog"
         aria-modal="true"
         aria-label="Cambridge Linguaskill Test Report"
-        className="scrollbar-slim relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-ink/10 bg-paper p-6 shadow-2xl sm:p-8"
+        aria-describedby="linguaskill-report-desc"
+        className="scrollbar-slim relative max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-ink/10 bg-paper shadow-2xl"
       >
-        <div className="mb-6 flex items-center justify-between border-b border-ink/10 pb-4">
+        <p id="linguaskill-report-desc" className="sr-only">
+          Official Linguaskill General test report: overall CEFR level and the
+          four skill-area scores with notes. Scroll to read the full
+          breakdown.
+        </p>
+        {/* Sticky header — the close control stays reachable while scrolling */}
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-ink/10 bg-paper/95 px-6 py-4 backdrop-blur-sm sm:px-8">
           <div>
             <p className="font-mono text-xs font-bold uppercase tracking-wider text-brand">
               Cambridge Assessment English
@@ -105,100 +150,104 @@ function LinguaskillReport({
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="rounded-md p-2 text-ink-light transition-colors hover:bg-ink/5 hover:text-ink"
+            className="rounded-md p-2 text-ink-light transition-colors hover:bg-ink/5 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
 
-        <div className="mb-6 grid grid-cols-2 gap-3 rounded-xl border border-ink/10 bg-ink/5 p-4 font-mono text-xs sm:grid-cols-3">
-          <div>
-            <span className="block text-[10px] text-ink-light">Candidate name:</span>
-            <span className="font-bold text-ink">Diego Yonoff</span>
-          </div>
-          <div>
-            <span className="block text-[10px] text-ink-light">Credential status:</span>
-            <span className="font-bold text-emerald-700 dark:text-emerald-400">
-              Official / Verified
-            </span>
-          </div>
-          <div>
-            <span className="block text-[10px] text-ink-light">Organisation:</span>
-            <span className="font-bold text-ink">Open English</span>
-          </div>
-          <div>
-            <span className="block text-[10px] text-ink-light">Centre / Ref no:</span>
-            <span className="font-bold text-ink">UX790</span>
-          </div>
-          <div>
-            <span className="block text-[10px] text-ink-light">Test exam:</span>
-            <span className="font-bold text-ink">Linguaskill General</span>
-          </div>
-        </div>
-
-        <div className="mb-6 flex items-center justify-between rounded-xl border border-brand/20 bg-brand/10 p-4">
-          <div>
-            <span className="block font-mono text-xs font-bold uppercase tracking-wider text-brand">
-              Average score &amp; CEFR level
-            </span>
-            <span className="font-serif text-3xl font-bold text-ink">
-              172{" "}
-              <span className="font-sans text-lg font-normal text-brand">
-                (CEFR Level B2)
+        <div className="space-y-5 px-6 py-5 sm:px-8 sm:py-6">
+          <div className="grid grid-cols-2 gap-3 rounded-xl border border-ink/10 bg-ink/5 p-4 font-mono text-xs sm:grid-cols-3">
+            <div>
+              <span className="block text-[10px] text-ink-light">Candidate name:</span>
+              <span className="font-bold text-ink">Diego Yonoff</span>
+            </div>
+            <div>
+              <span className="block text-[10px] text-ink-light">Credential status:</span>
+              <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                Official / Verified
               </span>
+            </div>
+            <div>
+              <span className="block text-[10px] text-ink-light">Organisation:</span>
+              <span className="font-bold text-ink">Open English</span>
+            </div>
+            <div>
+              <span className="block text-[10px] text-ink-light">Centre / Ref no:</span>
+              <span className="font-bold text-ink">UX790</span>
+            </div>
+            <div>
+              <span className="block text-[10px] text-ink-light">Test exam:</span>
+              <span className="font-bold text-ink">Linguaskill General</span>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-brand/20 bg-brand/10 p-4">
+            <div>
+              <span className="block font-mono text-xs font-bold uppercase tracking-wider text-brand">
+                Average score &amp; CEFR level
+              </span>
+              <span className="font-serif text-3xl font-bold text-ink">
+                172{" "}
+                <span className="font-sans text-lg font-normal text-brand">
+                  (CEFR Level B2)
+                </span>
+              </span>
+            </div>
+            <span className="rounded-full bg-brand px-4 py-2 font-mono text-sm font-bold text-brand-foreground shadow-sm">
+              Verified B2
             </span>
           </div>
-          <span className="rounded-full bg-brand px-4 py-2 font-mono text-sm font-bold text-brand-foreground shadow-sm">
-            Verified B2
-          </span>
-        </div>
 
-        <div className="mb-6 space-y-4">
-          <h4 className="border-b border-ink/10 pb-2 font-serif text-base font-bold text-ink">
-            Skill breakdown
-          </h4>
-          <ScoreBar
-            label="Listening"
-            score="180+"
-            level="C1 or above"
-            percent={95}
-            note="Can follow complex technical discussions, security briefings, and incident calls at natural native speed."
-            strong
-          />
-          <ScoreBar
-            label="Reading"
-            score="177"
-            level="B2"
-            percent={82}
-            note="Can read complex technical documentation, IAM vendor guides, and audit reports accurately."
-          />
-          <ScoreBar
-            label="Writing"
-            score="169"
-            level="B2"
-            percent={75}
-            note="Can write detailed access-review notes, ticket updates, and clear email communications."
-          />
-          <ScoreBar
-            label="Speaking"
-            score="158"
-            level="B1"
-            percent={65}
-            note="Can communicate operational status and participate effectively in daily standups and handovers."
-          />
-        </div>
+          <div>
+            <h4 className="border-b border-ink/10 pb-2 font-serif text-base font-bold text-ink">
+              Skill breakdown — all four areas
+            </h4>
+            <div className="divide-y divide-ink/10">
+              <ScoreBar
+                label="Listening"
+                score="180+"
+                level="C1 or above"
+                percent={95}
+                note="Can follow complex technical discussions, security briefings, and incident calls at natural native speed."
+                strong
+              />
+              <ScoreBar
+                label="Reading"
+                score="177"
+                level="B2"
+                percent={82}
+                note="Can read complex technical documentation, IAM vendor guides, and audit reports accurately."
+              />
+              <ScoreBar
+                label="Writing"
+                score="169"
+                level="B2"
+                percent={75}
+                note="Can write detailed access-review notes, ticket updates, and clear email communications."
+              />
+              <ScoreBar
+                label="Speaking"
+                score="158"
+                level="B1"
+                percent={65}
+                note="Can communicate operational status and participate effectively in daily standups and handovers."
+              />
+            </div>
+          </div>
 
-        <div className="flex items-center justify-between border-t border-ink/10 pt-4">
-          <span className="font-mono text-[10px] text-ink-light">
-            Cambridge Assessment English · Linguaskill
-          </span>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full bg-ink px-5 py-2 font-mono text-xs font-semibold text-paper transition-colors hover:bg-brand"
-          >
-            Close
-          </button>
+          <div className="flex items-center justify-between gap-4 border-t border-ink/10 pt-4">
+            <span className="font-mono text-[10px] text-ink-light">
+              Cambridge Assessment English · Linguaskill
+            </span>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-full bg-ink px-5 py-2 font-mono text-xs font-semibold text-paper transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </motion.div>
     </div>
@@ -256,21 +305,21 @@ export function Certifications() {
               </p>
 
               {cert.details ? (
-                <div className="mt-5 grid grid-cols-2 gap-2 font-mono text-xs">
+                <dl className="mt-5 space-y-2 border-t border-ink/10 pt-4 font-mono text-xs">
                   {cert.details.slice(0, 4).map((d) => (
                     <div
                       key={d.label}
-                      className="flex items-center justify-between rounded-lg border border-ink/10 bg-ink/5 px-2.5 py-2"
+                      className="flex items-baseline justify-between gap-3"
                     >
-                      <span className="text-ink-light">{d.label}:</span>
-                      <span className="font-bold text-ink">{d.value}</span>
+                      <dt className="text-ink-light">{d.label}:</dt>
+                      <dd className="text-right font-bold text-ink">{d.value}</dd>
                     </div>
                   ))}
-                </div>
+                </dl>
               ) : null}
 
               {cert.bullets ? (
-                <ul className="mt-5 space-y-2 rounded-xl border border-ink/10 bg-ink/5 p-4">
+                <ul className="mt-5 space-y-2 border-t border-dashed border-ink/10 pt-4">
                   {cert.bullets.map((b) => (
                     <li
                       key={b}

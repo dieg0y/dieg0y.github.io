@@ -16,7 +16,12 @@ function ArticleReader({
   article: Article;
   onClose: () => void;
 }) {
+  const readerRef = React.useRef<HTMLDivElement>(null);
+
   React.useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    // Move focus into the reader so keyboard users land inside it
+    readerRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -25,11 +30,14 @@ function ArticleReader({
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      previouslyFocused?.focus?.();
     };
   }, [onClose]);
 
   return (
     <motion.div
+      ref={readerRef}
+      tabIndex={-1}
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}

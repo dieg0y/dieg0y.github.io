@@ -13,13 +13,13 @@ export default function Page() {
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink">
       <a
-        href="#about"
+        href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:text-paper"
       >
         Skip to content
       </a>
       <PortfolioHeader />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Hero />
         <About />
         <Skills />

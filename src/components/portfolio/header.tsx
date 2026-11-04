@@ -4,8 +4,18 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { Fingerprint, Github, Linkedin, Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { site, profile } from "@/data/portfolio";
+
+/** Delay that covers the Sheet close animation + body scroll-lock release,
+ * so the smooth scroll to the target section is not cancelled mid-flight. */
+const NAV_SCROLL_DELAY_MS = 380;
 
 function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -31,6 +41,43 @@ function ThemeToggle() {
 
 export function PortfolioHeader() {
   const [open, setOpen] = React.useState(false);
+  const [activeSection, setActiveSection] = React.useState<string>("");
+
+  // Scroll-spy: mark the section currently in view so the nav answers "where am I?"
+  React.useEffect(() => {
+    const sections = site.nav
+      .map((item) => document.getElementById(item.href.slice(1)))
+      .filter((el): el is HTMLElement => el !== null);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length > 0) {
+          const topmost = visible.reduce((a, b) =>
+            a.boundingClientRect.top <= b.boundingClientRect.top ? a : b
+          );
+          setActiveSection(`#${topmost.target.id}`);
+        }
+      },
+      // Active band: upper-middle of the viewport
+      { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
+  // Close the sheet first, then scroll once the scroll-lock has been released.
+  const handleMobileNav = (href: string) => {
+    setOpen(false);
+    window.setTimeout(() => {
+      document.getElementById(href.slice(1))?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      window.history.replaceState(null, "", href);
+    }, NAV_SCROLL_DELAY_MS);
+  };
 
   return (
     <motion.header
@@ -50,6 +97,9 @@ export function PortfolioHeader() {
             </SheetTrigger>
             <SheetContent side="left" className="w-72 bg-paper p-0">
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+              <SheetDescription className="sr-only">
+                Links to the sections of this portfolio
+              </SheetDescription>
               <nav className="flex flex-col gap-1 px-6 py-8" aria-label="Mobile navigation">
                 <p className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-widest text-brand">
                   Junior IAM Analyst
@@ -58,8 +108,12 @@ export function PortfolioHeader() {
                   <a
                     key={item.href}
                     href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="rounded-lg px-3 py-2.5 font-mono text-sm text-ink-light transition-colors hover:bg-ink/5 hover:text-ink dark:hover:bg-ink/10"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleMobileNav(item.href);
+                    }}
+                    aria-current={activeSection === item.href ? "true" : undefined}
+                    className="rounded-lg px-3 py-2.5 font-mono text-sm text-ink-light transition-colors hover:bg-ink/5 hover:text-ink aria-[current=true]:text-ink aria-[current=true]:font-semibold dark:hover:bg-ink/10"
                   >
                     {item.label}
                   </a>
@@ -109,15 +163,23 @@ export function PortfolioHeader() {
           className="hidden items-center gap-5 font-mono text-xs font-medium tracking-wide md:flex"
           aria-label="Primary navigation"
         >
-          {site.nav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="text-ink-light transition-colors hover:text-brand"
-            >
-              {item.label}
-            </a>
-          ))}
+          {site.nav.map((item) => {
+            const isActive = activeSection === item.href;
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                aria-current={isActive ? "true" : undefined}
+                className={`rounded-sm px-0.5 py-1 underline-offset-4 transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand ${
+                  isActive
+                    ? "text-ink font-semibold underline decoration-brand decoration-2"
+                    : "text-ink-light"
+                }`}
+              >
+                {item.label}
+              </a>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2">

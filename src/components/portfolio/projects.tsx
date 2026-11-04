@@ -47,13 +47,15 @@ function ProjectStats({ project, live }: { project: Project; live?: RepoStat }) 
           {stats.language}
         </span>
       ) : null}
-      {typeof stats?.stars === "number" ? (
+      {/* Zero star/fork counts are real but read as "unvisited" — the
+          language and last-update signals carry the same weight honestly. */}
+      {typeof stats?.stars === "number" && stats.stars > 0 ? (
         <span className="inline-flex items-center gap-1">
           <Star className="h-3 w-3" aria-hidden="true" />
           {stats.stars}
         </span>
       ) : null}
-      {typeof stats?.forks === "number" ? (
+      {typeof stats?.forks === "number" && stats.forks > 0 ? (
         <span className="inline-flex items-center gap-1">
           <GitFork className="h-3 w-3" aria-hidden="true" />
           {stats.forks}
