@@ -384,7 +384,7 @@ export interface Project {
   repo: string;
   tags: string[];
   highlights: string[];
-  stats?: { stars?: number; forks?: number; language?: string };
+  stats?: { stars?: number; forks?: number; language?: string; updatedAt?: string };
 }
 
 export const projects: Project[] = [
