@@ -8,8 +8,11 @@ import { Certifications } from "@/components/portfolio/certifications";
 import { Writing } from "@/components/portfolio/writing";
 import { Contact } from "@/components/portfolio/contact";
 import { PortfolioFooter } from "@/components/portfolio/footer";
+import { getArticles } from "@/lib/blog";
 
 export default function Page() {
+  const articles = getArticles();
+
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink">
       <a
@@ -26,7 +29,7 @@ export default function Page() {
         <Projects />
         <Experience />
         <Certifications />
-        <Writing />
+        <Writing articles={articles} />
         <Contact />
       </main>
       <PortfolioFooter />

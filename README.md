@@ -28,6 +28,9 @@ This site is built on one non-negotiable rule: **no invented evidence.**
 - shadcn/ui primitives (Sheet, Toast) on Radix
 - Article reader with a sticky "On this page" scroll-spy index — desktop rail
   plus collapsible mobile drawer (`src/lib/toc.ts` extracts h2/h3 headings)
+- Blog posts are plain Markdown files in `content/blog/` — drop a `.md` in and
+  it's published (frontmatter parsed with gray-matter by `src/lib/blog.ts`);
+  see **GUIA-BLOGS.md** for the publishing guide in Spanish
 
 ## Project structure
 
@@ -36,16 +39,22 @@ src/
   app/                 # App Router: layout, page, fonts, globals.css
   components/portfolio/  # One component per portfolio section
   components/ui/       # shadcn/ui primitives in use (sheet, toast, toaster)
-  data/                # Single source of truth: portfolio.ts, articles.ts
+  data/                # portfolio.ts — profile, skills, projects, certifications
   hooks/               # use-toast
-  lib/                 # cn() utility + TOC heading extraction
-public/                # CV PDF, images, robots.txt, sitemap.xml
+  lib/                 # cn(), TOC heading extraction, blog loader (blog.ts)
+content/blog/          # Blog posts — one Markdown file per post
+                       # (drop a .md here and it's published; see GUIA-BLOGS.md)
+public/                # CV PDF, robots.txt, sitemap.xml, images
+  images/blog/<post>/  #   images belonging to each blog post
 scripts/               # generate_cv.py — regenerates the CV PDF
 .github/workflows/     # deploy.yml — builds & publishes to GitHub Pages
 ```
 
-All content (profile, skills, projects, labs, certifications, articles) lives
-in `src/data/` — edit those files to update the site.
+Portfolio content (profile, skills, projects, labs, certifications) lives in
+`src/data/portfolio.ts` — edit that file to update the site. Blog posts live in
+`content/blog/*.md`: drop a Markdown file in and it's published automatically
+(images go in `public/images/blog/<post>/`). GUIA-BLOGS.md walks through the
+whole workflow in Spanish.
 
 ## Development
 

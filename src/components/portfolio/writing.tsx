@@ -7,7 +7,7 @@ import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowLeft, BookOpen, CalendarDays, ChevronDown, Clock } from "lucide-react";
 import { SectionHeading } from "./section-heading";
-import { articles, type Article } from "@/data/articles";
+import type { Article } from "@/lib/blog";
 import { extractToc, headingId, type TocItem } from "@/lib/toc";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +37,28 @@ const markdownComponents: Components = {
       {children}
     </h3>
   ),
+  // External links open in a new tab so the portfolio stays open behind them
+  a: ({ href, children }) => {
+    const external = typeof href === "string" && /^https?:\/\//.test(href);
+    return (
+      <a href={href} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+        {children}
+      </a>
+    );
+  },
+  // Body images: markdown `![alt](/images/blog/<post>/foto.png)`
+  img: ({ src, alt }) => {
+    if (!src) return null;
+    return (
+      <img
+        src={src}
+        alt={alt ?? ""}
+        className="mx-auto my-8 rounded-xl border border-ink/10 shadow-sm"
+        loading="lazy"
+        decoding="async"
+      />
+    );
+  },
 };
 
 /** Shared "On this page" list — vertical rail, indentation encodes hierarchy. */
@@ -76,6 +98,28 @@ function TocList({
         );
       })}
     </ul>
+  );
+}
+
+/** Typographic cover used when a post has no `cover` image. */
+function CoverFallback({ title, className }: { title: string; className?: string }) {
+  return (
+    <div
+      className={cn(
+        "relative flex aspect-video w-full items-center justify-center bg-card",
+        className
+      )}
+    >
+      <div className="flex flex-col items-center gap-3 px-8 text-center">
+        <BookOpen className="h-7 w-7 text-brand/70" aria-hidden="true" />
+        <span className="line-clamp-3 font-serif text-lg italic leading-snug text-ink/75 sm:text-xl">
+          {title}
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-light">
+          Notes &amp; Writeups
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -213,24 +257,28 @@ function ArticleReader({
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="lg:flex lg:items-start lg:gap-10 xl:gap-16">
           <article className="min-w-0 max-w-3xl flex-1">
-            <div className="mb-3 flex flex-wrap items-center gap-2 font-mono text-xs text-ink-light">
-              {article.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded bg-brand/10 px-2.5 py-0.5 font-semibold text-brand"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+            {article.tags.length > 0 ? (
+              <div className="mb-3 flex flex-wrap items-center gap-2 font-mono text-xs text-ink-light">
+                {article.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded bg-brand/10 px-2.5 py-0.5 font-semibold text-brand"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            ) : null}
             <h1 className="mb-4 font-serif text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
               {article.title}
             </h1>
-            <div className="mb-8 flex items-center gap-4 border-b border-ink/10 pb-6 font-mono text-xs text-ink-light">
-              <span className="inline-flex items-center gap-1.5">
-                <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
-                {article.date}
-              </span>
+            <div className="mb-8 flex flex-wrap items-center gap-4 border-b border-ink/10 pb-6 font-mono text-xs text-ink-light">
+              {article.date ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+                  {article.date}
+                </span>
+              ) : null}
               <span className="inline-flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5" aria-hidden="true" />
                 {article.readTime}
@@ -238,16 +286,23 @@ function ArticleReader({
               <span>Diego Yonoff</span>
             </div>
 
-            <div className="relative mb-8 aspect-video overflow-hidden rounded-2xl border border-ink/10">
-              <Image
-                src={article.coverImage}
-                alt={article.coverAlt}
-                fill
-                sizes="(max-width: 768px) 100vw, 768px"
-                className="object-cover"
-                unoptimized
+            {article.coverImage ? (
+              <div className="relative mb-8 aspect-video overflow-hidden rounded-2xl border border-ink/10">
+                <Image
+                  src={article.coverImage}
+                  alt={article.coverAlt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 768px"
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+            ) : (
+              <CoverFallback
+                title={article.title}
+                className="mb-8 rounded-2xl border border-ink/10"
               />
-            </div>
+            )}
 
             {article.frameNote ? (
               <p className="mb-8 rounded-xl border border-brand/25 bg-brand/5 p-4 text-xs leading-relaxed text-ink-light sm:text-sm">
@@ -347,7 +402,7 @@ function ArticleReader({
   );
 }
 
-export function Writing() {
+export function Writing({ articles }: { articles: Article[] }) {
   const [active, setActive] = React.useState<Article | null>(null);
 
   return (
@@ -377,24 +432,39 @@ export function Writing() {
                 className="text-left"
                 aria-label={`Read article: ${article.title}`}
               >
-                <div className="relative aspect-video w-full overflow-hidden border-b border-ink/10">
-                  <Image
-                    src={article.coverImage}
-                    alt={article.coverAlt}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 576px"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    unoptimized
+                {article.coverImage ? (
+                  <div className="relative aspect-video w-full overflow-hidden border-b border-ink/10">
+                    <Image
+                      src={article.coverImage}
+                      alt={article.coverAlt}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 576px"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      unoptimized
+                    />
+                  </div>
+                ) : (
+                  <CoverFallback
+                    title={article.title}
+                    className="border-b border-ink/10 transition-colors duration-500 group-hover:bg-brand/5"
                   />
-                </div>
+                )}
                 <div className="p-6">
                   <div className="mb-3 flex flex-wrap items-center gap-2 font-mono text-[11px] text-ink-light">
-                    <span className="rounded bg-brand/10 px-2 py-0.5 font-semibold text-brand">
-                      {article.tags[0]}
-                    </span>
-                    <span>·</span>
-                    <span>{article.date}</span>
-                    <span>·</span>
+                    {article.tags[0] ? (
+                      <>
+                        <span className="rounded bg-brand/10 px-2 py-0.5 font-semibold text-brand">
+                          {article.tags[0]}
+                        </span>
+                        <span aria-hidden="true">·</span>
+                      </>
+                    ) : null}
+                    {article.date ? (
+                      <>
+                        <span>{article.date}</span>
+                        <span aria-hidden="true">·</span>
+                      </>
+                    ) : null}
                     <span>{article.readTime}</span>
                   </div>
                   <h3 className="font-serif text-xl font-bold leading-snug text-ink transition-colors group-hover:text-brand sm:text-2xl">
