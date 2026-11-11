@@ -65,21 +65,14 @@ export function Hero() {
                     aria-hidden="true"
                   />
                   <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-emerald-400">
-                    Identity &amp; Access · Active
+                    {profile.role} · Active
                   </span>
                 </div>
                 <Fingerprint className="h-4 w-4 text-[#e0855f]" aria-hidden="true" />
               </div>
 
-              <div className="relative space-y-1 pt-4">
-                <h2 className="font-serif text-xl font-bold tracking-tight">
-                  {profile.fullName}
-                </h2>
-                <p className="font-mono text-xs font-semibold uppercase tracking-wider text-[#e0855f]">
-                  {profile.role}
-                </p>
-              </div>
-
+              {/* One consistent spec-sheet: label left, value right — the same
+                  row grammar for discipline data and credential status. */}
               <dl className="relative space-y-2.5 pt-4">
                 {SPEC_ROWS.map((row) => (
                   <div
@@ -96,14 +89,17 @@ export function Hero() {
                 ))}
               </dl>
 
-              {/* Credential status — real, checkable data instead of empty texture */}
-              <dl className="relative grid grid-cols-2 gap-x-4 gap-y-3 border-t border-[#f2eee6]/10 pt-4">
+              {/* Credential status — real, checkable data, same row style as above */}
+              <dl className="relative space-y-2.5 border-t border-[#f2eee6]/10 pt-4">
                 {STATUS_ROWS.map((row) => (
-                  <div key={row.label}>
+                  <div
+                    key={row.label}
+                    className="flex items-baseline justify-between gap-4 border-b border-dashed border-[#f2eee6]/10 pb-2"
+                  >
                     <dt className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#f2eee6]/60">
                       {row.label}
                     </dt>
-                    <dd className="mt-0.5 font-mono text-[11px] font-medium text-[#f2eee6]/90">
+                    <dd className="text-right font-mono text-xs font-medium text-[#f2eee6]/90">
                       {row.value}
                     </dd>
                   </div>

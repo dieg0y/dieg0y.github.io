@@ -25,6 +25,17 @@ interface RepoStat {
   updatedAt?: string;
 }
 
+/* Live repository metadata, fetched directly from the public GitHub REST API
+ * (CORS-enabled, no token needed). Works identically in dev and on a static
+ * host (GitHub Pages); on any failure the audited static snapshot embedded
+ * in the data file is shown instead, so the UI never breaks. */
+const REPO_NAMES = [
+  "VAULTNOTES",
+  "plazoleta-usuarios",
+  "plazoleta-restaurante",
+  "IPsubnetting",
+] as const;
+
 const TYPE_LABELS: Record<Project["type"], string> = {
   personal: "Personal project",
   academic: "Academic project (university)",
@@ -32,8 +43,9 @@ const TYPE_LABELS: Record<Project["type"], string> = {
 
 function ProjectStats({ project, live }: { project: Project; live?: RepoStat }) {
   const stats = live ?? project.stats;
-  const updated = live?.updatedAt
-    ? new Date(live.updatedAt).toLocaleDateString("en-US", {
+  const updatedAt = live?.updatedAt ?? project.stats?.updatedAt;
+  const updated = updatedAt
+    ? new Date(updatedAt).toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
       })
@@ -87,16 +99,40 @@ export function Projects() {
 
   React.useEffect(() => {
     let cancelled = false;
-    fetch("/api/repos")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (!cancelled && data?.repos) {
-          const map: Record<string, RepoStat> = {};
-          for (const repo of data.repos as RepoStat[]) {
-            map[repo.name.toLowerCase()] = repo;
-          }
-          setLiveStats(map);
+    Promise.all(
+      REPO_NAMES.map(async (name) => {
+        try {
+          const res = await fetch(`https://api.github.com/repos/dieg0y/${name}`, {
+            headers: { Accept: "application/vnd.github+json" },
+            signal: AbortSignal.timeout(6000),
+          });
+          if (!res.ok) return null;
+          const json = (await res.json()) as {
+            name?: string;
+            stargazers_count?: number;
+            forks_count?: number;
+            language?: string | null;
+            pushed_at?: string;
+          };
+          return {
+            name: json.name ?? name,
+            stars: json.stargazers_count,
+            forks: json.forks_count,
+            language: json.language ?? undefined,
+            updatedAt: json.pushed_at,
+          } satisfies RepoStat;
+        } catch {
+          return null;
         }
+      })
+    )
+      .then((results) => {
+        if (cancelled) return;
+        const map: Record<string, RepoStat> = {};
+        for (const r of results) {
+          if (r) map[r.name.toLowerCase()] = r;
+        }
+        setLiveStats(map);
       })
       .catch(() => {
         /* fallback: static stats already embedded */

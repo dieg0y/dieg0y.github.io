@@ -384,7 +384,7 @@ export interface Project {
   repo: string;
   tags: string[];
   highlights: string[];
-  stats?: { stars?: number; forks?: number; language?: string };
+  stats?: { stars?: number; forks?: number; language?: string; updatedAt?: string };
 }
 
 export const projects: Project[] = [
@@ -405,7 +405,7 @@ export const projects: Project[] = [
       "Ticket simulations for access reviews, JML cases, and identity troubleshooting with closure notes",
       "Offline ZIP backup system with strict Zod validation, anti zip-bomb checks, and DOMPurify sanitization",
     ],
-    stats: { language: "TypeScript" },
+    stats: { language: "TypeScript", updatedAt: "2026-10-29T17:56:52Z" },
   },
   {
     id: "plazoleta-usuarios",
@@ -422,7 +422,7 @@ export const projects: Project[] = [
       "Stateless session policy with a custom JwtAuthenticationFilter and authentication entry point",
       "Shared signing secret design so a second service can validate tokens without calling back",
     ],
-    stats: { language: "Java" },
+    stats: { language: "Java", updatedAt: "2026-10-29T15:29:41Z" },
   },
   {
     id: "plazoleta-restaurante",
@@ -438,7 +438,7 @@ export const projects: Project[] = [
       "JWT filter reuse across services with role extraction per request",
       "Owner validation performed through the user service port, not duplicated locally",
     ],
-    stats: { language: "Java" },
+    stats: { language: "Java", updatedAt: "2026-10-29T15:29:57Z" },
   },
   {
     id: "ipsubnetting",
@@ -454,7 +454,7 @@ export const projects: Project[] = [
       "Clean separation of concerns: calculator logic, immutable results, presentation layer",
       "Windows ANSI terminal support and input validation",
     ],
-    stats: { language: "Python", stars: 5, forks: 1 },
+    stats: { language: "Python", stars: 5, forks: 1, updatedAt: "2026-10-29T15:29:16Z" },
   },
 ];
 

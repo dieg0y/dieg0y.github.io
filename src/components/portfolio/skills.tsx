@@ -81,8 +81,8 @@ export function Skills() {
         >
           {LEGEND_ORDER.map((level) => (
             <div key={level} className="flex items-start gap-3">
-              <LevelBadge level={level} className="mt-0.5" />
-              <p className="text-xs leading-relaxed text-ink-light">
+              <LevelBadge level={level} className="mt-px shrink-0" />
+              <p className="pt-0.5 text-xs leading-relaxed text-ink-light">
                 {LEVEL_META[level].description}
               </p>
             </div>
