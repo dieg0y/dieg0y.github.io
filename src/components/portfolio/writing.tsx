@@ -2,12 +2,82 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import ReactMarkdown from "react-markdown";
+import { AnimatePresence, motion } from "framer-motion";
+import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowLeft, BookOpen, CalendarDays, Clock } from "lucide-react";
+import { ArrowLeft, BookOpen, CalendarDays, ChevronDown, Clock } from "lucide-react";
 import { SectionHeading } from "./section-heading";
 import { articles, type Article } from "@/data/articles";
+import { extractToc, headingId, type TocItem } from "@/lib/toc";
+import { cn } from "@/lib/utils";
+
+/** Recursively flatten React children into plain text (for heading ids). */
+function extractText(node: React.ReactNode): string {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join("");
+  if (React.isValidElement<{ children?: React.ReactNode }>(node)) {
+    return extractText(node.props.children);
+  }
+  return "";
+}
+
+/**
+ * Markdown render overrides: give h2/h3 a stable DOM id (same slug used by
+ * the TOC extractor) plus scroll-margin so anchor jumps clear the sticky bar.
+ */
+const markdownComponents: Components = {
+  h2: ({ children }) => (
+    <h2 id={headingId(extractText(children))} className="scroll-mt-24">
+      {children}
+    </h2>
+  ),
+  h3: ({ children }) => (
+    <h3 id={headingId(extractText(children))} className="scroll-mt-24">
+      {children}
+    </h3>
+  ),
+};
+
+/** Shared "On this page" list — vertical rail, indentation encodes hierarchy. */
+function TocList({
+  items,
+  activeId,
+  onNavigate,
+}: {
+  items: TocItem[];
+  activeId: string | null;
+  onNavigate: (id: string) => void;
+}) {
+  return (
+    <ul className="space-y-0.5 border-l border-ink/15">
+      {items.map((item) => {
+        const active = activeId === item.id;
+        return (
+          <li key={item.id}>
+            <a
+              href={`#${item.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate(item.id);
+              }}
+              aria-current={active ? "true" : undefined}
+              className={cn(
+                "-ml-px block border-l-2 py-1.5 pr-2 text-[13px] leading-snug transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
+                item.level === 3 ? "pl-8" : "pl-4",
+                active
+                  ? "border-brand font-medium text-ink"
+                  : "border-transparent text-ink-light hover:border-ink/40 hover:text-ink"
+              )}
+            >
+              {item.text}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
 
 function ArticleReader({
   article,
@@ -17,6 +87,12 @@ function ArticleReader({
   onClose: () => void;
 }) {
   const readerRef = React.useRef<HTMLDivElement>(null);
+  const [activeId, setActiveId] = React.useState<string | null>(null);
+  const [tocOpen, setTocOpen] = React.useState(false);
+  const clickedIdRef = React.useRef<string | null>(null);
+  const clickedUntilRef = React.useRef(0);
+
+  const toc = React.useMemo(() => extractToc(article.content), [article.content]);
 
   React.useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement | null;
@@ -34,6 +110,78 @@ function ArticleReader({
     };
   }, [onClose]);
 
+  // Scrollspy: track which heading is currently passing the reading position.
+  React.useEffect(() => {
+    const root = readerRef.current;
+    if (!root || toc.length === 0) return;
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rootTop = root.getBoundingClientRect().top;
+      // Sticky header bar (~60px) + breathing room above the reading line
+      const threshold = rootTop + 140;
+      const viewBottom = rootTop + root.clientHeight;
+
+      // A clicked item stays active through the smooth-scroll flight so the
+      // highlight lands on what the reader asked for — including the final
+      // sections, which cannot scroll all the way to the top of the reader
+      // (clamped at the bottom). Once the flight is over, the first manual
+      // scroll hands control back to the regular spy below.
+      const clicked = clickedIdRef.current;
+      if (clicked) {
+        if (performance.now() < clickedUntilRef.current) {
+          setActiveId(clicked);
+          return;
+        }
+        clickedIdRef.current = null;
+      }
+
+      // When the reader is scrolled to the very bottom, the last heading
+      // still on screen wins (the section the reader is actually in).
+      const atBottom = root.scrollTop + root.clientHeight >= root.scrollHeight - 2;
+
+      let current: TocItem | null = null;
+      for (const item of toc) {
+        const el = document.getElementById(item.id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top <= threshold || (atBottom && top < viewBottom)) current = item;
+        else if (!atBottom) break;
+      }
+      setActiveId(current ? current.id : toc[0].id);
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(update);
+    };
+
+    root.addEventListener("scroll", onScroll, { passive: true });
+    update();
+    return () => {
+      root.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [toc]);
+
+  /** Smooth-scroll a heading into view inside the reader, below the sticky bar. */
+  const goToHeading = (id: string, extraOffset = 0) => {
+    const root = readerRef.current;
+    const el = document.getElementById(id);
+    if (!root || !el) return;
+    const top =
+      el.getBoundingClientRect().top -
+      root.getBoundingClientRect().top +
+      root.scrollTop -
+      76 -
+      extraOffset;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    clickedIdRef.current = id;
+    clickedUntilRef.current = performance.now() + 2500;
+    root.scrollTo({ top: Math.max(top, 0), behavior: prefersReduced ? "auto" : "smooth" });
+    setActiveId(id);
+  };
+
   return (
     <motion.div
       ref={readerRef}
@@ -47,11 +195,11 @@ function ArticleReader({
       aria-label={`Reading: ${article.title}`}
     >
       <div className="sticky top-0 z-10 border-b border-ink/10 bg-paper/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 font-mono text-xs font-semibold text-ink transition-colors hover:border-brand hover:text-brand"
+            className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 font-mono text-xs font-semibold text-ink transition-colors hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
             <span>Back to portfolio</span>
@@ -62,66 +210,139 @@ function ArticleReader({
         </div>
       </div>
 
-      <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-        <div className="mb-3 flex flex-wrap items-center gap-2 font-mono text-xs text-ink-light">
-          {article.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded bg-brand/10 px-2.5 py-0.5 font-semibold text-brand"
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="lg:flex lg:items-start lg:gap-10 xl:gap-16">
+          <article className="min-w-0 max-w-3xl flex-1">
+            <div className="mb-3 flex flex-wrap items-center gap-2 font-mono text-xs text-ink-light">
+              {article.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded bg-brand/10 px-2.5 py-0.5 font-semibold text-brand"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <h1 className="mb-4 font-serif text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
+              {article.title}
+            </h1>
+            <div className="mb-8 flex items-center gap-4 border-b border-ink/10 pb-6 font-mono text-xs text-ink-light">
+              <span className="inline-flex items-center gap-1.5">
+                <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+                {article.date}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                {article.readTime}
+              </span>
+              <span>Diego Yonoff</span>
+            </div>
+
+            <div className="relative mb-8 aspect-video overflow-hidden rounded-2xl border border-ink/10">
+              <Image
+                src={article.coverImage}
+                alt={article.coverAlt}
+                fill
+                sizes="(max-width: 768px) 100vw, 768px"
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+
+            {article.frameNote ? (
+              <p className="mb-8 rounded-xl border border-brand/25 bg-brand/5 p-4 text-xs leading-relaxed text-ink-light sm:text-sm">
+                <strong className="font-semibold text-ink">Why this is here:</strong>{" "}
+                {article.frameNote}
+              </p>
+            ) : null}
+
+            {/* Mobile: collapsible "On this page" index */}
+            {toc.length > 0 ? (
+              <div className="mb-8 lg:hidden">
+                <button
+                  type="button"
+                  onClick={() => setTocOpen((open) => !open)}
+                  aria-expanded={tocOpen}
+                  aria-controls="article-toc-mobile"
+                  className="flex w-full items-center justify-between gap-3 rounded-xl border border-ink/10 bg-card px-4 py-3 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-light transition-colors hover:border-brand/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >
+                  <span>On this page</span>
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 shrink-0 text-ink-light transition-transform duration-300",
+                      tocOpen && "rotate-180"
+                    )}
+                    aria-hidden="true"
+                  />
+                </button>
+                <AnimatePresence initial={false}>
+                  {tocOpen ? (
+                    <motion.div
+                      id="article-toc-mobile"
+                      key="toc-list"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-2 max-h-72 overflow-y-auto rounded-xl border border-ink/10 bg-card px-4 py-3 scrollbar-slim">
+                        <TocList
+                          items={toc}
+                          activeId={activeId}
+                          onNavigate={(id) => {
+                            // Compensate for the collapsible box height: the
+                            // box collapses after the click, shifting content
+                            // up, so the scroll target is measured against
+                            // the post-collapse layout.
+                            const box = document.getElementById("article-toc-mobile");
+                            const boxH = box ? box.getBoundingClientRect().height + 8 : 0;
+                            goToHeading(id, boxH);
+                            setTocOpen(false);
+                          }}
+                        />
+                      </div>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+            ) : null}
+
+            <div className="prose prose-neutral dark:prose-invert max-w-none sm:prose-lg">
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                {article.content}
+              </ReactMarkdown>
+            </div>
+
+            <div className="mt-12 border-t border-ink/10 pt-6 text-center">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-full bg-ink px-6 py-3 font-mono text-xs font-semibold text-paper transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              >
+                Back to portfolio
+              </button>
+            </div>
+          </article>
+
+          {/* Desktop: sticky "On this page" rail with scrollspy.
+              self-stretch makes the nav span the full row height so the
+              inner sticky box can stick for the whole article length. */}
+          {toc.length > 0 ? (
+            <nav
+              aria-label="On this page"
+              className="hidden shrink-0 lg:block lg:w-56 lg:self-stretch xl:w-60"
             >
-              {tag}
-            </span>
-          ))}
+              <div className="sticky top-20 max-h-[calc(100vh-7rem)] overflow-y-auto pb-8 scrollbar-slim">
+                <p className="mb-3 pr-2 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-light">
+                  On this page
+                </p>
+                <TocList items={toc} activeId={activeId} onNavigate={goToHeading} />
+              </div>
+            </nav>
+          ) : null}
         </div>
-        <h1 className="mb-4 font-serif text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
-          {article.title}
-        </h1>
-        <div className="mb-8 flex items-center gap-4 border-b border-ink/10 pb-6 font-mono text-xs text-ink-light">
-          <span className="inline-flex items-center gap-1.5">
-            <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
-            {article.date}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-            {article.readTime}
-          </span>
-          <span>Diego Yonoff</span>
-        </div>
-
-        <div className="relative mb-8 aspect-video overflow-hidden rounded-2xl border border-ink/10">
-          <Image
-            src={article.coverImage}
-            alt={article.coverAlt}
-            fill
-            sizes="(max-width: 768px) 100vw, 768px"
-            className="object-cover"
-            unoptimized
-          />
-        </div>
-
-        {article.frameNote ? (
-          <p className="mb-8 rounded-xl border border-brand/25 bg-brand/5 p-4 text-xs leading-relaxed text-ink-light sm:text-sm">
-            <strong className="font-semibold text-ink">Why this is here:</strong>{" "}
-            {article.frameNote}
-          </p>
-        ) : null}
-
-        <div className="prose prose-neutral dark:prose-invert max-w-none sm:prose-lg">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {article.content}
-          </ReactMarkdown>
-        </div>
-
-        <div className="mt-12 border-t border-ink/10 pt-6 text-center">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full bg-ink px-6 py-3 font-mono text-xs font-semibold text-paper transition-colors hover:bg-brand"
-          >
-            Back to portfolio
-          </button>
-        </div>
-      </article>
+      </div>
     </motion.div>
   );
 }
@@ -188,7 +409,7 @@ export function Writing() {
                 <button
                   type="button"
                   onClick={() => setActive(article)}
-                  className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-xs font-bold text-paper transition-colors hover:bg-brand"
+                  className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-xs font-bold text-paper transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                 >
                   <span>Read article →</span>
                 </button>
