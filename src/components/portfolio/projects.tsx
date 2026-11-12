@@ -91,14 +91,12 @@ function ClassBadge({ classification }: { classification: Project["classificatio
  * always shows the GitHub link; the details expand on demand. */
 function CollapsibleProject({
   project,
-  defaultOpen,
   live,
 }: {
   project: Project;
-  defaultOpen?: boolean;
   live?: RepoStat;
 }) {
-  const [open, setOpen] = React.useState(Boolean(defaultOpen));
+  const [open, setOpen] = React.useState(false);
   const panelId = `${project.id}-panel`;
 
   return (
@@ -294,34 +292,10 @@ export function ProjectsView() {
           <CollapsibleProject
             key={project.id}
             project={project}
-            defaultOpen={project.featured}
             live={liveFor(project)}
           />
         ))}
       </div>
-
-      <motion.aside
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="mt-6 rounded-2xl border border-dashed border-ink/20 p-6 text-xs leading-relaxed text-ink-light sm:text-sm"
-        role="note"
-      >
-        <p>
-          Beyond these repositories, the same body of work includes home-lab
-          audits and ticket simulations documented inside{" "}
-          <a
-            href="https://github.com/dieg0y/VAULTNOTES"
-            target="_blank"
-            rel="noreferrer"
-            className="font-semibold text-brand underline decoration-brand/40 underline-offset-2 hover:text-ink"
-          >
-            VaultNotes
-          </a>{" "}
-          — the knowledge platform is itself the evidence.
-        </p>
-      </motion.aside>
     </div>
   );
 }

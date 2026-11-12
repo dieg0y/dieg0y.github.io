@@ -55,12 +55,12 @@ const jetbrainsMono = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dieg0y.github.io"),
-  title: "Diego Yonoff | Junior IAM Analyst — Identity & Access Management",
+  title: "Diego Yonoff | IAM Analyst — Identity & Access Management",
   description:
-    "Portfolio of Diego Yonoff — junior IAM analyst based in Barranquilla, Colombia, focused on identity lifecycle (JML), RBAC, access reviews, Microsoft Entra ID and Active Directory, and identity security (ITDR). Open to remote junior IAM roles.",
+    "Portfolio of Diego Yonoff — IAM analyst based in Barranquilla, Colombia, focused on identity lifecycle (JML), RBAC, access reviews, Microsoft Entra ID and Active Directory, and identity security (ITDR). Open to remote IAM roles.",
   keywords: [
     "Diego Yonoff",
-    "Junior IAM Analyst",
+    "IAM Analyst",
     "Identity and Access Management",
     "Identity Security",
     "ITDR",
@@ -82,13 +82,13 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://dieg0y.github.io/",
     siteName: "Diego Yonoff — IAM Portfolio",
-    title: "Diego Yonoff | Junior IAM Analyst — Identity & Access Management",
+    title: "Diego Yonoff | IAM Analyst — Identity & Access Management",
     description:
-      "Evidence-based IAM skills, identity-focused projects, labs, and certifications. Seeking a first remote junior IAM role.",
+      "Evidence-based IAM skills, identity-focused projects, labs, and certifications. Seeking a first remote IAM role.",
   },
   twitter: {
     card: "summary",
-    title: "Diego Yonoff | Junior IAM Analyst",
+    title: "Diego Yonoff | IAM Analyst",
     description:
       "Identity & Access Management portfolio — skills, projects, labs, and certifications with honest evidence levels.",
   },
@@ -102,9 +102,9 @@ const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Diego Yonoff Molina",
-  jobTitle: "Junior IAM Analyst",
+  jobTitle: "IAM Analyst",
   description:
-    "Systems Engineering student focused on Identity and Access Management (IAM) and Identity Security, seeking a first remote junior IAM role.",
+    "Systems Engineering student focused on Identity and Access Management (IAM) and Identity Security, seeking a first remote IAM role.",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Barranquilla",

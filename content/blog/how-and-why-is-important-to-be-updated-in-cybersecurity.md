@@ -6,7 +6,7 @@ readTime: "6 min read"
 tags: ["Cybersecurity", "Threat Intelligence", "Resources", "Career Advice"]
 cover: "/images/blog/how-and-why-is-important-to-be-updated-in-cybersecurity/cover.png"
 coverAlt: "Illustration of cybersecurity news sources and threat updates"
-order: 2
+order: 1
 ---
 
 An important part of the whole cybersecurity topic is how to stay updated, and at some point you have to ask yourself that question as a beginner. While we all know cybersecurity is not a field that has an end — quite the opposite, new vulnerabilities, news, and patches are being found all the time — a lot of people don't know how to stay updated. So I want to share the sources I use that have helped me a lot.

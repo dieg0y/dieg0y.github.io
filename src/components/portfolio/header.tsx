@@ -11,7 +11,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { PdfViewer } from "./pdf-viewer";
 import { site, profile } from "@/data/portfolio";
 import type { PageKey } from "./router";
 
@@ -40,35 +39,6 @@ function ThemeToggle() {
         <Moon className="h-4 w-4" aria-hidden="true" />
       )}
     </button>
-  );
-}
-
-/** CV quick access — opens inline on the page instead of forcing a download. */
-function CvButton({ variant = "pill" }: { variant?: "pill" | "sheet" }) {
-  const [open, setOpen] = React.useState(false);
-  const cls =
-    variant === "pill"
-      ? "hidden items-center gap-2 rounded-full border border-ink/20 px-3.5 py-1.5 font-mono text-xs font-medium text-ink transition-colors hover:border-brand hover:text-brand md:inline-flex focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-      : "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-ink/20 px-5 py-3 font-mono text-sm font-medium text-ink-light transition-colors hover:border-brand hover:text-brand";
-
-  return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-label="View CV (opens here, no download needed)"
-        className={cls}
-      >
-        <span>CV</span>
-      </button>
-      <PdfViewer
-        open={open}
-        src={profile.cvUrl}
-        title="CV — Diego Yonoff · Junior IAM Analyst"
-        downloadName="CV_Diego_Yonoff_IAM.pdf"
-        onClose={() => setOpen(false)}
-      />
-    </>
   );
 }
 
@@ -107,7 +77,7 @@ export function PortfolioHeader({ current }: { current: PageKey }) {
               </SheetDescription>
               <nav className="flex flex-col gap-1 px-6 py-8" aria-label="Mobile navigation">
                 <p className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-widest text-brand">
-                  Junior IAM Analyst
+                  IAM Analyst
                 </p>
                 {site.pages.map((item) => (
                   <a
@@ -124,7 +94,6 @@ export function PortfolioHeader({ current }: { current: PageKey }) {
                   </a>
                 ))}
                 <div className="mt-6 flex flex-col gap-3 border-t border-ink/10 pt-6">
-                  <CvButton variant="sheet" />
                   <div className="flex items-center gap-3">
                     <a
                       href={profile.github}
@@ -192,7 +161,6 @@ export function PortfolioHeader({ current }: { current: PageKey }) {
 
         <div className="flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
-          <CvButton />
           <a
             href={profile.github}
             target="_blank"

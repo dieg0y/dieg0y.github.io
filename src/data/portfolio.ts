@@ -60,7 +60,7 @@ export interface Profile {
 export const profile: Profile = {
   name: "Diego Yonoff",
   fullName: "Diego Yonoff Molina",
-  role: "Junior IAM Analyst",
+  role: "IAM Analyst",
   focus: "Identity & Access Management · Identity Security",
   location: "Barranquilla, Colombia",
   timezone: "UTC-5 · Flexible overlap",
@@ -437,34 +437,6 @@ export const projects: Project[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Experience — only real, verifiable engagements                      */
-/* ------------------------------------------------------------------ */
-
-export interface ExperienceItem {
-  role: string;
-  org: string;
-  period: string;
-  location: string;
-  kind: "Academic role" | "Personal";
-  points: string[];
-}
-
-export const experience: ExperienceItem[] = [
-  {
-    role: "Academic Tutor — Computer Logic & Programming Fundamentals",
-    org: "Universidad Simón Bolívar",
-    period: "2024 — Present",
-    location: "Barranquilla, Colombia",
-    kind: "Academic role",
-    points: [
-      "Tutor lower-semester Systems Engineering students in algorithm design, object-oriented logic, and data structure principles.",
-      "Guide practical laboratory exercises on Linux CLI, system administration, and network fundamentals.",
-      "Practice technical communication and structured problem-solving in accountable academic settings.",
-    ],
-  },
-];
-
-/* ------------------------------------------------------------------ */
 /* Certifications — real statuses only                                 */
 /* ------------------------------------------------------------------ */
 
@@ -555,7 +527,6 @@ export const education = {
   location: "Barranquilla, Colombia",
   points: [
     "Coursework: computer networks, database architecture, operating systems, algorithm analysis.",
-    "Academic tutor for the Systems Engineering program (2024 — present).",
     "Analytical foundation in Linux/Windows administration and TCP/IP networking.",
   ],
 };
@@ -589,5 +560,5 @@ export const site = {
     { href: "#/blog", label: "Blogs" },
     { href: "#/contact", label: "Contact" },
   ],
-  identityLine: "Junior IAM Analyst · Barranquilla, Colombia",
+  identityLine: "IAM Analyst · Barranquilla, Colombia",
 };

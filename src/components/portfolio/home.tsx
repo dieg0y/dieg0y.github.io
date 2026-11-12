@@ -13,10 +13,8 @@ import {
   FolderKanban,
   Gauge,
   MessageSquare,
-  Sparkles,
 } from "lucide-react";
 import { Hero } from "./hero";
-import { certifications } from "@/data/portfolio";
 import type { Article } from "@/lib/blog";
 
 const PAGE_CARDS = [
@@ -74,9 +72,6 @@ function BlogThumb({ title }: { title: string }) {
 
 export function HomeView({ articles }: { articles: Article[] }) {
   const [latest, next] = articles.slice(0, 2);
-  const inProgress = certifications
-    .filter((c) => c.status === "in-progress")
-    .map((c) => c.title.split(" — ")[0]);
 
   return (
     <>
@@ -127,25 +122,6 @@ export function HomeView({ articles }: { articles: Article[] }) {
               </motion.a>
             ))}
           </div>
-
-          {/* Currently studying — one honest line, linked on the certs page */}
-          {inProgress.length > 0 ? (
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="mt-8 flex flex-wrap items-center gap-2 rounded-2xl border border-brand/25 bg-brand/5 px-5 py-4 font-mono text-[11px] font-semibold uppercase tracking-wider text-ink-light"
-            >
-              <Sparkles className="h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
-              <span className="normal-case tracking-normal">
-                Currently studying:{" "}
-                <a href="#/certifications" className="text-brand underline decoration-brand/40 underline-offset-2 hover:text-ink">
-                  {inProgress.join(" · ")}
-                </a>
-              </span>
-            </motion.p>
-          ) : null}
         </div>
       </section>
 

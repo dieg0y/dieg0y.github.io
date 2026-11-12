@@ -69,16 +69,16 @@ def entry(title, meta, bullets):
 doc = SimpleDocTemplate(
     '/home/z/my-project/public/cv-diego-yonoff-iam.pdf', pagesize=A4,
     leftMargin=1.3*cm, rightMargin=1.3*cm, topMargin=1.0*cm, bottomMargin=0.9*cm,
-    title='Resume - Diego Yonoff - Junior IAM Analyst',
+    title='Resume - Diego Yonoff - IAM Analyst',
     author='Diego Yonoff', creator='Diego Yonoff',
-    subject='Junior IAM Analyst - Identity and Access Management',
+    subject='IAM Analyst - Identity and Access Management',
 )
 
 story = []
 
 # ── Header ──
 story.append(Paragraph('<b>DIEGO YONOFF MOLINA</b>', name_style))
-story.append(Paragraph('Junior IAM Analyst — Identity &amp; Access Management', tagline_style))
+story.append(Paragraph('IAM Analyst — Identity &amp; Access Management', tagline_style))
 story.append(Paragraph(
     'Barranquilla, Colombia (UTC-5) · Open to remote &nbsp;|&nbsp; '
     'diegojose0405@gmail.com &nbsp;|&nbsp; github.com/dieg0y &nbsp;|&nbsp; '
@@ -89,7 +89,7 @@ story.append(Paragraph(
 story.extend(section_header('PROFESSIONAL SUMMARY'))
 story.append(Paragraph(
     'Systems Engineering student specializing in Identity and Access Management, '
-    'seeking a first remote junior IAM role. I study the identity lifecycle end to '
+    'seeking a first remote IAM role. I study the identity lifecycle end to '
     'end — joiner/mover/leaver, RBAC, access reviews — through a self-authored '
     '34-phase, 373-item roadmap with per-item exit criteria, backed by working '
     'code: JWT authentication services, IAM tooling, and an offline IAM study '
@@ -190,8 +190,9 @@ story.append(Spacer(1, 1.5))
 story.extend(section_header('CERTIFICATIONS & LANGUAGES'))
 for b in [
     'Cambridge Linguaskill General — CEFR B2 (verified; average 172, Listening '
-    'C1) · Microsoft SC-200 — in progress · Next target: SC-300 (Identity and '
-    'Access Administrator) · Languages: Spanish (native), English (B2).',
+    'C1) · Microsoft SC-300 — Identity and Access Administrator — in progress · '
+    'CompTIA Security+ (SY0-701) — in progress · Languages: Spanish (native), '
+    'English (B2).',
 ]:
     story.append(Paragraph(f'• {b}', bullet_style))
 

@@ -1,11 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowUpRight,
   Award,
   CheckCircle2,
+  ChevronDown,
   FileText,
   X,
 } from "lucide-react";
@@ -18,6 +19,16 @@ const STATUS_STYLES: Record<Certification["status"], string> = {
     "border-emerald-600/25 bg-emerald-600/10 text-emerald-700 dark:text-emerald-400",
   "in-progress": "border-amber-600/30 bg-amber-600/10 text-amber-700 dark:text-amber-400",
 };
+
+function StatusBadge({ status, label }: { status: Certification["status"]; label: string }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${STATUS_STYLES[status]}`}
+    >
+      {label}
+    </span>
+  );
+}
 
 function ScoreBar({
   label,
@@ -254,6 +265,141 @@ function LinguaskillReport({
   );
 }
 
+/** One certification in the vertical collapsible list: the title row stays
+ * compact and always shows the certificate/curriculum link; the details
+ * expand on demand. */
+function CollapsibleCert({
+  cert,
+  index,
+  onOpenCertificate,
+}: {
+  cert: Certification;
+  index: number;
+  onOpenCertificate: (cert: Certification) => void;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const panelId = `cert-${cert.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-panel`;
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay: Math.min(index, 2) * 0.07 }}
+      className="overflow-hidden rounded-2xl border border-ink/10 bg-card shadow-sm transition-colors hover:border-brand/40"
+    >
+      {/* Header row — title toggles the panel; the certificate link stays
+       * reachable always, collapsed or not */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-5 sm:px-7">
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-controls={panelId}
+          className="group flex min-h-[44px] min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        >
+          <ChevronDown
+            className={`h-5 w-5 shrink-0 text-ink-light transition-transform duration-300 group-hover:text-brand ${
+              open ? "rotate-180" : ""
+            }`}
+            aria-hidden="true"
+          />
+          <span className="min-w-0">
+            <span className="mb-1 flex flex-wrap items-center gap-2">
+              <StatusBadge status={cert.status} label={cert.statusLabel} />
+              <span className="font-mono text-[11px] font-semibold text-ink-light">
+                {cert.issuer}
+              </span>
+            </span>
+            <span className="block font-serif text-xl font-bold leading-tight text-ink transition-colors group-hover:text-brand sm:text-2xl">
+              {cert.title}
+            </span>
+            {cert.headline ? (
+              <span className="mt-0.5 block truncate font-mono text-xs font-semibold text-brand">
+                {cert.headline}
+              </span>
+            ) : null}
+          </span>
+        </button>
+
+        {cert.showModal ? (
+          <button
+            type="button"
+            onClick={() => onOpenCertificate(cert)}
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-xs font-semibold text-paper shadow-md transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          >
+            <FileText className="h-4 w-4 text-brand" aria-hidden="true" />
+            <span>View certificate</span>
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
+        ) : cert.link ? (
+          <a
+            href={cert.link}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-ink/20 px-5 py-2.5 font-mono text-xs font-semibold text-ink transition-colors hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          >
+            <span>{cert.linkLabel}</span>
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        ) : null}
+      </div>
+
+      {/* Expanding panel */}
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.div
+            key="panel"
+            id={panelId}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-ink/10 px-5 pb-7 pt-6 sm:px-7">
+              <p className="max-w-3xl text-sm leading-relaxed text-ink-light sm:text-base">
+                {cert.description}
+              </p>
+
+              {cert.details ? (
+                <dl className="mt-5 grid gap-x-8 gap-y-2 border-t border-ink/10 pt-5 font-mono text-xs sm:grid-cols-2">
+                  {cert.details.slice(0, 4).map((d) => (
+                    <div
+                      key={d.label}
+                      className="flex items-baseline justify-between gap-3"
+                    >
+                      <dt className="text-ink-light">{d.label}:</dt>
+                      <dd className="text-right font-bold text-ink">{d.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : null}
+
+              {cert.bullets ? (
+                <ul className="mt-5 space-y-2 border-t border-dashed border-ink/10 pt-5">
+                  {cert.bullets.map((b) => (
+                    <li
+                      key={b}
+                      className="flex items-start gap-2 font-mono text-[11px] leading-relaxed text-ink-light"
+                    >
+                      <CheckCircle2
+                        className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand"
+                        aria-hidden="true"
+                      />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </motion.article>
+  );
+}
+
 export function CertificationsView() {
   const [reportOpen, setReportOpen] = React.useState(false);
   const [pdfOpen, setPdfOpen] = React.useState(false);
@@ -274,116 +420,19 @@ export function CertificationsView() {
         kicker="Professional Credentials"
         icon={Award}
         title="Certifications"
-        description="Only real statuses appear here: one Cambridge certificate verified, and two exams actively in progress — because listing goals as credentials helps nobody."
+        description="My certifications — always working on learning more. Tap one to expand the details."
       />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="space-y-6">
         {certifications.map((cert, i) => (
-          <motion.article
+          <CollapsibleCert
             key={cert.title}
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5, delay: (i % 3) * 0.07 }}
-            className="flex flex-col rounded-2xl border border-ink/10 bg-card p-7 shadow-sm transition-colors hover:border-brand/40"
-          >
-            <div className="mb-4 flex items-center justify-between gap-2">
-              <span
-                className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
-                  STATUS_STYLES[cert.status]
-                }`}
-              >
-                {cert.statusLabel}
-              </span>
-              <span className="font-mono text-[11px] font-semibold text-ink-light">
-                {cert.issuer}
-              </span>
-            </div>
-
-            <h3 className="font-serif text-2xl font-bold leading-tight text-ink">
-              {cert.title}
-            </h3>
-            {cert.headline ? (
-              <p className="mt-1 font-mono text-xs font-semibold text-brand">
-                {cert.headline}
-              </p>
-            ) : null}
-
-            <p className="mt-4 text-sm leading-relaxed text-ink-light">
-              {cert.description}
-            </p>
-
-            {cert.details ? (
-              <dl className="mt-5 space-y-2 border-t border-ink/10 pt-4 font-mono text-xs">
-                {cert.details.slice(0, 4).map((d) => (
-                  <div
-                    key={d.label}
-                    className="flex items-baseline justify-between gap-3"
-                  >
-                    <dt className="text-ink-light">{d.label}:</dt>
-                    <dd className="text-right font-bold text-ink">{d.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            ) : null}
-
-            {cert.bullets ? (
-              <ul className="mt-5 space-y-2 border-t border-dashed border-ink/10 pt-4">
-                {cert.bullets.map((b) => (
-                  <li
-                    key={b}
-                    className="flex items-start gap-2 font-mono text-[11px] leading-relaxed text-ink-light"
-                  >
-                    <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" aria-hidden="true" />
-                    {b}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-
-            <div className="mt-auto pt-6">
-              {cert.showModal ? (
-                <button
-                  type="button"
-                  onClick={() => openCertificate(cert)}
-                  className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-ink px-4 py-2 font-mono text-xs font-semibold text-paper shadow-sm transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-                >
-                  <FileText className="h-3.5 w-3.5 text-brand" aria-hidden="true" />
-                  <span>View certificate →</span>
-                </button>
-              ) : cert.link ? (
-                <a
-                  href={cert.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-brand transition-colors hover:underline"
-                >
-                  <span>{cert.linkLabel}</span>
-                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                </a>
-              ) : null}
-            </div>
-          </motion.article>
+            cert={cert}
+            index={i}
+            onOpenCertificate={openCertificate}
+          />
         ))}
       </div>
-
-      <motion.aside
-        initial={{ opacity: 0, y: 14 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-card p-6 shadow-sm"
-        role="note"
-      >
-        <p className="max-w-2xl text-xs leading-relaxed text-ink-light sm:text-sm">
-          Certificates open right here on the page — no download needed. The
-          same inline viewer is available for the CV from the header and the{" "}
-          <a href="#/about" className="font-semibold text-brand underline decoration-brand/40 underline-offset-2 hover:text-ink">
-            About
-          </a>{" "}
-          page.
-        </p>
-      </motion.aside>
 
       {linguaskill ? (
         <>

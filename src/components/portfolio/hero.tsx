@@ -3,7 +3,6 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import {
-  Download,
   Fingerprint,
   FileText,
   Github,
@@ -172,14 +171,6 @@ export function Hero() {
                 <span>View CV</span>
               </button>
               <a
-                href={profile.cvUrl}
-                download="CV_Diego_Yonoff_IAM.pdf"
-                aria-label="Download CV as PDF"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink/20 text-ink transition-colors hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-              >
-                <Download className="h-4 w-4" aria-hidden="true" />
-              </a>
-              <a
                 href={`mailto:${profile.email}`}
                 className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-ink/20 px-5 py-3 font-medium text-ink transition-colors hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
@@ -212,7 +203,7 @@ export function Hero() {
       <PdfViewer
         open={cvOpen}
         src={profile.cvUrl}
-        title="CV — Diego Yonoff · Junior IAM Analyst"
+        title="CV — Diego Yonoff · IAM Analyst"
         downloadName="CV_Diego_Yonoff_IAM.pdf"
         onClose={() => setCvOpen(false)}
       />

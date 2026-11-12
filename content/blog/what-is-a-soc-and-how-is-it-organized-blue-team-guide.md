@@ -6,7 +6,7 @@ readTime: "8 min read"
 tags: ["SOC", "Blue Team", "SIEM", "Security Operations", "ITDR context"]
 cover: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1600&q=80"
 coverAlt: "Security operations center with monitoring screens"
-order: 1
+order: 2
 frameNote: "Blue Team fundamentals are the complementary side of my IAM profile: understanding how identity alerts are triaged is what connects access governance to identity threat detection (ITDR)."
 ---
 

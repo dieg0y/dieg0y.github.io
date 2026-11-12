@@ -50,13 +50,13 @@ const PAGE_KEYS: Record<string, PageKey> = {
 };
 
 const PAGE_TITLES: Record<PageKey, string> = {
-  home: "Diego Yonoff | Junior IAM Analyst — Identity & Access Management",
-  about: "About — Diego Yonoff | Junior IAM Analyst",
-  skills: "Skills — Diego Yonoff | Junior IAM Analyst",
-  projects: "Projects — Diego Yonoff | Junior IAM Analyst",
-  certifications: "Certifications — Diego Yonoff | Junior IAM Analyst",
-  blog: "Blogs — Diego Yonoff | Junior IAM Analyst",
-  contact: "Contact — Diego Yonoff | Junior IAM Analyst",
+  home: "Diego Yonoff | IAM Analyst — Identity & Access Management",
+  about: "About — Diego Yonoff | IAM Analyst",
+  skills: "Skills — Diego Yonoff | IAM Analyst",
+  projects: "Projects — Diego Yonoff | IAM Analyst",
+  certifications: "Certifications — Diego Yonoff | IAM Analyst",
+  blog: "Blogs — Diego Yonoff | IAM Analyst",
+  contact: "Contact — Diego Yonoff | IAM Analyst",
 };
 
 /** `#/blog/mi-post`, `#blog` (legacy anchor), `#/` and `` all resolve. */

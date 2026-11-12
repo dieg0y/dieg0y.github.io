@@ -133,8 +133,23 @@ function CoverFallback({ title, className }: { title: string; className?: string
   );
 }
 
+/** Small typographic thumbnail used in the compact index list when a post
+ * has no cover image. */
+function ThumbFallback({ title }: { title: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="flex aspect-[3/2] w-24 shrink-0 items-center justify-center rounded-xl border border-ink/10 bg-card sm:w-44"
+    >
+      <span className="line-clamp-3 px-2 text-center font-serif text-[10px] italic leading-snug text-ink/70 sm:text-xs">
+        {title}
+      </span>
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ */
-/* Blog index page                                                     */
+/* Blog index page — compact vertical list, newest first                */
 /* ------------------------------------------------------------------ */
 
 export function BlogIndexView({ articles }: { articles: Article[] }) {
@@ -144,10 +159,10 @@ export function BlogIndexView({ articles }: { articles: Article[] }) {
         kicker="Blogs"
         icon={PenLine}
         title="Blogs"
-        description="My articles and writeups — Blue Team guides now, IAM-focused pieces as my study path advances. Each one opens with its own index ('On this page') so you can jump straight to a section."
+        description="My articles and writeups, newest first — Blue Team guides now, IAM-focused pieces as my study path advances. Each one opens with its own index ('On this page') so you can jump straight to a section."
       />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="space-y-4">
         {articles.map((article, i) => (
           <motion.a
             key={article.slug}
@@ -155,28 +170,26 @@ export function BlogIndexView({ articles }: { articles: Article[] }) {
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5, delay: (i % 2) * 0.08 }}
-            className="group flex flex-col overflow-hidden rounded-2xl border border-ink/10 bg-card shadow-sm transition-colors hover:border-brand/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            transition={{ duration: 0.5, delay: Math.min(i, 2) * 0.07 }}
+            className="group flex min-h-[44px] gap-4 rounded-2xl border border-ink/10 bg-card p-4 shadow-sm transition-colors hover:border-brand/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand sm:gap-5 sm:p-5"
           >
             {article.coverImage ? (
-              <div className="relative aspect-video w-full overflow-hidden border-b border-ink/10">
+              <span className="relative hidden aspect-[3/2] w-24 shrink-0 overflow-hidden rounded-xl border border-ink/10 sm:block sm:w-44">
                 <Image
                   src={article.coverImage}
                   alt={article.coverAlt}
                   fill
-                  sizes="(max-width: 768px) 100vw, 576px"
+                  sizes="176px"
                   className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                   unoptimized
                 />
-              </div>
+              </span>
             ) : (
-              <CoverFallback
-                title={article.title}
-                className="border-b border-ink/10 transition-colors duration-500 group-hover:bg-brand/5"
-              />
+              <ThumbFallback title={article.title} />
             )}
-            <div className="flex flex-1 flex-col p-6">
-              <div className="mb-3 flex flex-wrap items-center gap-2 font-mono text-[11px] text-ink-light">
+
+            <span className="min-w-0 flex-1">
+              <span className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-ink-light">
                 {article.tags[0] ? (
                   <span className="rounded bg-brand/10 px-2 py-0.5 font-semibold text-brand">
                     {article.tags[0]}
@@ -189,18 +202,18 @@ export function BlogIndexView({ articles }: { articles: Article[] }) {
                   </>
                 ) : null}
                 <span>{article.readTime}</span>
-              </div>
-              <h3 className="font-serif text-xl font-bold leading-snug text-ink transition-colors group-hover:text-brand sm:text-2xl">
+              </span>
+              <span className="block font-serif text-lg font-bold leading-snug text-ink transition-colors group-hover:text-brand sm:text-xl">
                 {article.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-ink-light">
+              </span>
+              <span className="mt-1.5 block text-sm leading-relaxed text-ink-light line-clamp-2">
                 {article.excerpt}
-              </p>
-              <span className="mt-auto pt-5 inline-flex items-center gap-1.5 font-mono text-xs font-bold text-brand">
+              </span>
+              <span className="mt-2 inline-flex items-center gap-1.5 font-mono text-xs font-bold text-brand">
                 <span>Read blog</span>
                 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
               </span>
-            </div>
+            </span>
           </motion.a>
         ))}
       </div>

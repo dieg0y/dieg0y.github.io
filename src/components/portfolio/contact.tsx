@@ -54,7 +54,7 @@ export function ContactView() {
               Let&rsquo;s talk identity.
             </h2>
             <p className="mb-8 max-w-2xl text-sm leading-relaxed text-[#f2eee6]/75 sm:text-base">
-              If your team needs a junior IAM analyst who documents everything,
+              If your team needs an IAM analyst who documents everything,
               labels every skill claim with its evidence level, and is already
               deep in the lifecycle-and-governance problem space — my inbox is
               open. I respond in English or Spanish, usually within a day.

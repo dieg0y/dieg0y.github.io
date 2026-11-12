@@ -1,9 +1,9 @@
-# Diego Yonoff — Junior IAM Analyst Portfolio
+# Diego Yonoff — IAM Analyst Portfolio
 
 Live site: **<https://dieg0y.github.io>**
 
 Portfolio of Diego Yonoff (Barranquilla, Colombia), positioned for a first remote
-**Junior IAM Analyst** role — Identity & Access Management, with SOC / Blue Team
+**IAM Analyst** role — Identity & Access Management, with SOC / Blue Team
 fundamentals kept strictly as the complementary ITDR layer.
 
 ## Content policy

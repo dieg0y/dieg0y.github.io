@@ -2,7 +2,7 @@
   "name": "dieg0y-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "Diego Yonoff — Junior IAM Analyst portfolio. Evidence-based skills, projects, labs and certifications.",
+  "description": "Diego Yonoff — IAM Analyst portfolio. Evidence-based skills, projects, labs and certifications.",
   "scripts": {
     "dev": "next dev -p 3000 2>&1 | tee dev.log",
     "lint": "eslint .",
