@@ -1,16 +1,19 @@
 "use client";
 
+import * as React from "react";
 import { motion } from "framer-motion";
 import {
   Download,
   Fingerprint,
+  FileText,
   Github,
   Globe,
   Linkedin,
   Mail,
   MapPin,
 } from "lucide-react";
-import { profile, projects } from "@/data/portfolio";
+import { profile } from "@/data/portfolio";
+import { PdfViewer } from "./pdf-viewer";
 
 const SPEC_ROWS: { label: string; value: string }[] = [
   { label: "Focus", value: "Identity & Access Management" },
@@ -20,17 +23,19 @@ const SPEC_ROWS: { label: string; value: string }[] = [
   { label: "Complementary", value: "Identity Security / ITDR (SOC base)" },
 ];
 
-/* Honest credential data — every value is checkable elsewhere on this page */
+/* Honest credential data — every value is checkable elsewhere on this site */
 const STATUS_ROWS: { label: string; value: string }[] = [
   { label: "Availability", value: "Open to remote" },
   { label: "English", value: "B2 · Cambridge verified" },
-  { label: "Evidence", value: `${projects.length} public repositories` },
+  { label: "Evidence", value: "3 public repositories" },
   { label: "Base", value: "Barranquilla · UTC-5" },
 ];
 
 export function Hero() {
+  const [cvOpen, setCvOpen] = React.useState(false);
+
   return (
-    <section id="top" aria-label="Introduction" className="relative overflow-hidden">
+    <section aria-label="Introduction" className="relative overflow-hidden">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.35] dark:opacity-[0.2]"
         style={{
@@ -158,13 +163,21 @@ export function Hero() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3 font-mono text-xs">
+              <button
+                type="button"
+                onClick={() => setCvOpen(true)}
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-ink px-6 py-3 font-semibold text-paper shadow-md transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              >
+                <FileText className="h-4 w-4 text-brand" aria-hidden="true" />
+                <span>View CV</span>
+              </button>
               <a
                 href={profile.cvUrl}
                 download="CV_Diego_Yonoff_IAM.pdf"
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-ink px-6 py-3 font-semibold text-paper shadow-md transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                aria-label="Download CV as PDF"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink/20 text-ink transition-colors hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
-                <Download className="h-4 w-4 text-brand" aria-hidden="true" />
-                <span>Download CV (PDF)</span>
+                <Download className="h-4 w-4" aria-hidden="true" />
               </a>
               <a
                 href={`mailto:${profile.email}`}
@@ -195,6 +208,14 @@ export function Hero() {
           </div>
         </motion.div>
       </div>
+
+      <PdfViewer
+        open={cvOpen}
+        src={profile.cvUrl}
+        title="CV — Diego Yonoff · Junior IAM Analyst"
+        downloadName="CV_Diego_Yonoff_IAM.pdf"
+        onClose={() => setCvOpen(false)}
+      />
     </section>
   );
 }

@@ -37,3 +37,6 @@ Para poner una imagen dentro del post, guardala en
 ![Descripción de la imagen](/images/blog/mi-nuevo-post/foto.png)
 
 Listo. Guardá el archivo y el post ya queda en la web.
+
+Nota: el aviso de uso de IA (disclaimer) sale AUTOMÁTICO al final de todos
+los posts — no lo escribas, la web lo agrega sola.

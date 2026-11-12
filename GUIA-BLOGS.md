@@ -14,7 +14,7 @@ Esta guía cubre todo: crear el post, llenar el encabezado, dónde van las imág
 | 2 | Guardás las imágenes del post | `public/images/blog/mi-post/` |
 | 3 | Escribís el artículo en Markdown | dentro del mismo `.md` |
 
-Guardás, y listo: el post aparece en la sección **Writing** con su tarjeta, su portada y su índice **"On this page"** generado solo.
+Guardás, y listo: el post aparece en la página **Blogs** (y en la portada de inicio) con su tarjeta, su portada y su índice **"On this page"** generado solo. Al final del artículo sale **automáticamente** el disclaimer de uso de IA (más abajo te explico).
 
 > Ya hay una plantilla lista para copiar: **`content/blog/_plantilla.md`**.
 > Duplicá ese archivo, renombralo y tenés la estructura completa servida.
@@ -202,6 +202,15 @@ Hacés push → GitHub Actions reconstruye la página → en 1–2 minutos el po
 
 ## 7. Extras útiles
 
+### El disclaimer de IA (automático, no lo escribas)
+
+Al final de **todos** los posts sale solo este aviso:
+
+> **A note on how this article was produced**
+> AI tools were used to organize and format this document. All the information, research, and investigation behind it was done by Diego Yonoff Molina.
+
+No hay que agregar nada en el `.md` — la web lo pone siempre. Si algún día quisieras cambiar el texto, está en `src/data/portfolio.ts` (constante `AI_DISCLAIMER`).
+
 ### Borrador (post oculto)
 
 ```yaml
@@ -254,7 +263,23 @@ Lo que aprendí…
 
 ---
 
-## 8. Checklist final
+## 8. Subir PDFs (CV y certificados) para verlos SIN descargar
+
+La web tiene un **visor de PDF integrado**: la gente hace clic en "View CV" o "View certificate" y el documento se abre ahí mismo en la página (los navegadores de escritorio los muestran sin descargar; en el celular el visor ofrece el botón "New tab" para abrirlo con el visor nativo).
+
+### Dónde va cada PDF
+
+| Documento | Ruta exacta | Nombre sugerido |
+|---|---|---|
+| CV | `public/cv-diego-yonoff-iam.pdf` | ya está en uso |
+| Certificado Cambridge | `public/certs/linguaskill-diego-yonoff.pdf` | ese exacto |
+| Otros certificados futuros | `public/certs/<nombre>-en-minusculas.pdf` | minúsculas y guiones |
+
+- Solo **arrastrás el PDF** a esa carpeta, hacés commit + push, y ya queda visible en el visor.
+- El botón "View certificate" de Cambridge primero intenta el PDF; si todavía no existe, muestra el reporte detallado (el modal con las barras de puntaje). O sea: mientras subís el PDF no pasa nada raro, y apenas lo subás, se ve ahí mismo.
+- El CV ya está funcionando con el visor (botones "View CV" en la portada, el encabezado y la página About).
+
+## 9. Checklist final
 
 Antes de hacer push, revisá:
 

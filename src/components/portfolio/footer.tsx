@@ -9,7 +9,7 @@ export function PortfolioFooter() {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-start">
           <div className="flex flex-col gap-3">
-            <a href="#top" className="group flex items-center gap-3">
+            <a href="#/" className="group flex items-center gap-3">
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-paper">
                 <Fingerprint className="h-4 w-4 text-brand" aria-hidden="true" />
               </span>
@@ -28,7 +28,7 @@ export function PortfolioFooter() {
             className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs font-medium"
             aria-label="Footer navigation"
           >
-            {site.nav.map((item) => (
+            {site.pages.map((item) => (
               <a
                 key={item.href}
                 href={item.href}

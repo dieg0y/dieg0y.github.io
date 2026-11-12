@@ -10,13 +10,13 @@ import {
   X,
 } from "lucide-react";
 import { SectionHeading } from "./section-heading";
+import { PdfViewer, pdfExists } from "./pdf-viewer";
 import { certifications, type Certification } from "@/data/portfolio";
 
 const STATUS_STYLES: Record<Certification["status"], string> = {
   verified:
     "border-emerald-600/25 bg-emerald-600/10 text-emerald-700 dark:text-emerald-400",
   "in-progress": "border-amber-600/30 bg-amber-600/10 text-amber-700 dark:text-amber-400",
-  target: "border-ink/15 bg-ink/5 text-ink-light",
 };
 
 function ScoreBar({
@@ -57,6 +57,7 @@ function ScoreBar({
   );
 }
 
+/** Fallback report shown when the certificate PDF hasn't been uploaded yet. */
 function LinguaskillReport({
   open,
   onClose,
@@ -71,7 +72,6 @@ function LinguaskillReport({
     const node = dialogRef.current;
     const previouslyFocused = document.activeElement as HTMLElement | null;
 
-    // Move focus into the dialog, lock body scroll behind it
     node?.focus();
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -254,112 +254,149 @@ function LinguaskillReport({
   );
 }
 
-export function Certifications() {
+export function CertificationsView() {
   const [reportOpen, setReportOpen] = React.useState(false);
+  const [pdfOpen, setPdfOpen] = React.useState(false);
+  const linguaskill = certifications.find((c) => c.showModal);
+
+  /** View certificate: inline PDF when uploaded, detailed report otherwise. */
+  const openCertificate = async (cert: Certification) => {
+    if (cert.pdf && (await pdfExists(cert.pdf))) {
+      setPdfOpen(true);
+    } else if (cert.showModal) {
+      setReportOpen(true);
+    }
+  };
 
   return (
-    <section id="certifications" aria-labelledby="certifications-label" className="scroll-mt-24">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-        <SectionHeading
-          id="certifications"
-          kicker="Professional Credentials"
-          icon={Award}
-          title="Certifications"
-          description="Only real statuses appear here: one verified certificate, one exam actively in progress, and one stated as a target — because listing goals as credentials helps nobody."
-        />
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <SectionHeading
+        kicker="Professional Credentials"
+        icon={Award}
+        title="Certifications"
+        description="Only real statuses appear here: one Cambridge certificate verified, and two exams actively in progress — because listing goals as credentials helps nobody."
+      />
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {certifications.map((cert, i) => (
-            <motion.article
-              key={cert.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: (i % 3) * 0.07 }}
-              className="flex flex-col rounded-2xl border border-ink/10 bg-card p-7 shadow-sm transition-colors hover:border-brand/40"
-            >
-              <div className="mb-4 flex items-center justify-between gap-2">
-                <span
-                  className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
-                    STATUS_STYLES[cert.status]
-                  }`}
-                >
-                  {cert.statusLabel}
-                </span>
-                <span className="font-mono text-[11px] font-semibold text-ink-light">
-                  {cert.issuer}
-                </span>
-              </div>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {certifications.map((cert, i) => (
+          <motion.article
+            key={cert.title}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.5, delay: (i % 3) * 0.07 }}
+            className="flex flex-col rounded-2xl border border-ink/10 bg-card p-7 shadow-sm transition-colors hover:border-brand/40"
+          >
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <span
+                className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
+                  STATUS_STYLES[cert.status]
+                }`}
+              >
+                {cert.statusLabel}
+              </span>
+              <span className="font-mono text-[11px] font-semibold text-ink-light">
+                {cert.issuer}
+              </span>
+            </div>
 
-              <h3 className="font-serif text-2xl font-bold leading-tight text-ink">
-                {cert.title}
-              </h3>
-              {cert.headline ? (
-                <p className="mt-1 font-mono text-xs font-semibold text-brand">
-                  {cert.headline}
-                </p>
-              ) : null}
-
-              <p className="mt-4 text-sm leading-relaxed text-ink-light">
-                {cert.description}
+            <h3 className="font-serif text-2xl font-bold leading-tight text-ink">
+              {cert.title}
+            </h3>
+            {cert.headline ? (
+              <p className="mt-1 font-mono text-xs font-semibold text-brand">
+                {cert.headline}
               </p>
+            ) : null}
 
-              {cert.details ? (
-                <dl className="mt-5 space-y-2 border-t border-ink/10 pt-4 font-mono text-xs">
-                  {cert.details.slice(0, 4).map((d) => (
-                    <div
-                      key={d.label}
-                      className="flex items-baseline justify-between gap-3"
-                    >
-                      <dt className="text-ink-light">{d.label}:</dt>
-                      <dd className="text-right font-bold text-ink">{d.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              ) : null}
+            <p className="mt-4 text-sm leading-relaxed text-ink-light">
+              {cert.description}
+            </p>
 
-              {cert.bullets ? (
-                <ul className="mt-5 space-y-2 border-t border-dashed border-ink/10 pt-4">
-                  {cert.bullets.map((b) => (
-                    <li
-                      key={b}
-                      className="flex items-start gap-2 font-mono text-[11px] leading-relaxed text-ink-light"
-                    >
-                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" aria-hidden="true" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-
-              <div className="mt-auto pt-6">
-                {cert.showModal ? (
-                  <button
-                    type="button"
-                    onClick={() => setReportOpen(true)}
-                    className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 font-mono text-xs font-semibold text-paper shadow-sm transition-colors hover:bg-brand"
+            {cert.details ? (
+              <dl className="mt-5 space-y-2 border-t border-ink/10 pt-4 font-mono text-xs">
+                {cert.details.slice(0, 4).map((d) => (
+                  <div
+                    key={d.label}
+                    className="flex items-baseline justify-between gap-3"
                   >
-                    <FileText className="h-3.5 w-3.5 text-brand" aria-hidden="true" />
-                    <span>View official test report →</span>
-                  </button>
-                ) : cert.link ? (
-                  <a
-                    href={cert.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-brand transition-colors hover:underline"
+                    <dt className="text-ink-light">{d.label}:</dt>
+                    <dd className="text-right font-bold text-ink">{d.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+
+            {cert.bullets ? (
+              <ul className="mt-5 space-y-2 border-t border-dashed border-ink/10 pt-4">
+                {cert.bullets.map((b) => (
+                  <li
+                    key={b}
+                    className="flex items-start gap-2 font-mono text-[11px] leading-relaxed text-ink-light"
                   >
-                    <span>{cert.linkLabel}</span>
-                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
-                ) : null}
-              </div>
-            </motion.article>
-          ))}
-        </div>
+                    <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" aria-hidden="true" />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+
+            <div className="mt-auto pt-6">
+              {cert.showModal ? (
+                <button
+                  type="button"
+                  onClick={() => openCertificate(cert)}
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-ink px-4 py-2 font-mono text-xs font-semibold text-paper shadow-sm transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >
+                  <FileText className="h-3.5 w-3.5 text-brand" aria-hidden="true" />
+                  <span>View certificate →</span>
+                </button>
+              ) : cert.link ? (
+                <a
+                  href={cert.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-brand transition-colors hover:underline"
+                >
+                  <span>{cert.linkLabel}</span>
+                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </a>
+              ) : null}
+            </div>
+          </motion.article>
+        ))}
       </div>
 
-      <LinguaskillReport open={reportOpen} onClose={() => setReportOpen(false)} />
-    </section>
+      <motion.aside
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-card p-6 shadow-sm"
+        role="note"
+      >
+        <p className="max-w-2xl text-xs leading-relaxed text-ink-light sm:text-sm">
+          Certificates open right here on the page — no download needed. The
+          same inline viewer is available for the CV from the header and the{" "}
+          <a href="#/about" className="font-semibold text-brand underline decoration-brand/40 underline-offset-2 hover:text-ink">
+            About
+          </a>{" "}
+          page.
+        </p>
+      </motion.aside>
+
+      {linguaskill ? (
+        <>
+          <LinguaskillReport open={reportOpen} onClose={() => setReportOpen(false)} />
+          <PdfViewer
+            open={pdfOpen}
+            src={linguaskill.pdf ?? ""}
+            title={`${linguaskill.title} — certificate`}
+            downloadName="Linguaskill_Diego_Yonoff_Certificate.pdf"
+            onClose={() => setPdfOpen(false)}
+          />
+        </>
+      ) : null}
+    </div>
   );
 }

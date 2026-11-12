@@ -6,7 +6,7 @@ import { Check, Copy, Globe, Mail, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { profile } from "@/data/portfolio";
 
-export function Contact() {
+export function ContactView() {
   const { toast } = useToast();
   const [copied, setCopied] = React.useState(false);
 
@@ -28,15 +28,14 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" aria-labelledby="contact-label" className="scroll-mt-24">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-2xl border border-ink/10 bg-[#16130e] p-8 text-[#f2eee6] shadow-2xl dark:border-[#f2eee6]/15 dark:bg-[#241f17] dark:shadow-black/60 sm:p-12"
-        >
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.6 }}
+        className="relative overflow-hidden rounded-2xl border border-ink/10 bg-[#16130e] p-8 text-[#f2eee6] shadow-2xl dark:border-[#f2eee6]/15 dark:bg-[#241f17] dark:shadow-black/60 sm:p-12"
+      >
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.06]"
             style={{
@@ -97,7 +96,6 @@ export function Contact() {
             </p>
           </div>
         </motion.div>
-      </div>
-    </section>
+    </div>
   );
 }

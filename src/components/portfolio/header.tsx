@@ -11,11 +11,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { PdfViewer } from "./pdf-viewer";
 import { site, profile } from "@/data/portfolio";
+import type { PageKey } from "./router";
 
-/** Delay that covers the Sheet close animation + body scroll-lock release,
- * so the smooth scroll to the target section is not cancelled mid-flight. */
-const NAV_SCROLL_DELAY_MS = 380;
+/** Page key derived from a hash route (`#/about` → `about`). */
+function pageKeyOf(href: string): PageKey | null {
+  const clean = href.replace(/^#\/?/, "").split("/")[0];
+  return clean.length > 0 ? (clean as PageKey) : null;
+}
 
 function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -39,44 +43,45 @@ function ThemeToggle() {
   );
 }
 
-export function PortfolioHeader() {
+/** CV quick access — opens inline on the page instead of forcing a download. */
+function CvButton({ variant = "pill" }: { variant?: "pill" | "sheet" }) {
   const [open, setOpen] = React.useState(false);
-  const [activeSection, setActiveSection] = React.useState<string>("");
+  const cls =
+    variant === "pill"
+      ? "hidden items-center gap-2 rounded-full border border-ink/20 px-3.5 py-1.5 font-mono text-xs font-medium text-ink transition-colors hover:border-brand hover:text-brand md:inline-flex focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+      : "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-ink/20 px-5 py-3 font-mono text-sm font-medium text-ink-light transition-colors hover:border-brand hover:text-brand";
 
-  // Scroll-spy: mark the section currently in view so the nav answers "where am I?"
-  React.useEffect(() => {
-    const sections = site.nav
-      .map((item) => document.getElementById(item.href.slice(1)))
-      .filter((el): el is HTMLElement => el !== null);
-    if (sections.length === 0) return;
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="View CV (opens here, no download needed)"
+        className={cls}
+      >
+        <span>CV</span>
+      </button>
+      <PdfViewer
+        open={open}
+        src={profile.cvUrl}
+        title="CV — Diego Yonoff · Junior IAM Analyst"
+        downloadName="CV_Diego_Yonoff_IAM.pdf"
+        onClose={() => setOpen(false)}
+      />
+    </>
+  );
+}
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length > 0) {
-          const topmost = visible.reduce((a, b) =>
-            a.boundingClientRect.top <= b.boundingClientRect.top ? a : b
-          );
-          setActiveSection(`#${topmost.target.id}`);
-        }
-      },
-      // Active band: upper-middle of the viewport
-      { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
-    );
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
-  }, []);
+export function PortfolioHeader({ current }: { current: PageKey }) {
+  const [open, setOpen] = React.useState(false);
 
-  // Close the sheet first, then scroll once the scroll-lock has been released.
+  /* Mobile nav: close the sheet first (its scroll lock), then let the
+   * hash change navigate — mirrors the router's own top-of-page scroll. */
   const handleMobileNav = (href: string) => {
     setOpen(false);
     window.setTimeout(() => {
-      document.getElementById(href.slice(1))?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-      window.history.replaceState(null, "", href);
-    }, NAV_SCROLL_DELAY_MS);
+      window.location.hash = href;
+    }, 320);
   };
 
   return (
@@ -98,13 +103,13 @@ export function PortfolioHeader() {
             <SheetContent side="left" className="w-72 bg-paper p-0">
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
               <SheetDescription className="sr-only">
-                Links to the sections of this portfolio
+                Links to the pages of this portfolio
               </SheetDescription>
               <nav className="flex flex-col gap-1 px-6 py-8" aria-label="Mobile navigation">
                 <p className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-widest text-brand">
                   Junior IAM Analyst
                 </p>
-                {site.nav.map((item) => (
+                {site.pages.map((item) => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -112,43 +117,46 @@ export function PortfolioHeader() {
                       e.preventDefault();
                       handleMobileNav(item.href);
                     }}
-                    aria-current={activeSection === item.href ? "true" : undefined}
-                    className="rounded-lg px-3 py-2.5 font-mono text-sm text-ink-light transition-colors hover:bg-ink/5 hover:text-ink aria-[current=true]:text-ink aria-[current=true]:font-semibold dark:hover:bg-ink/10"
+                    aria-current={current === pageKeyOf(item.href) ? "true" : undefined}
+                    className="rounded-lg px-3 py-2.5 font-mono text-sm text-ink-light transition-colors hover:bg-ink/5 hover:text-ink aria-[current=true]:font-semibold aria-[current=true]:text-ink dark:hover:bg-ink/10"
                   >
                     {item.label}
                   </a>
                 ))}
-                <div className="mt-6 flex items-center gap-3 border-t border-ink/10 pt-6">
-                  <a
-                    href={profile.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="GitHub profile"
-                    className="rounded-full bg-ink/5 p-2.5 text-ink-light transition-colors hover:bg-ink hover:text-paper"
-                  >
-                    <Github className="h-4 w-4" aria-hidden="true" />
-                  </a>
-                  <a
-                    href={profile.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="LinkedIn profile"
-                    className="rounded-full bg-ink/5 p-2.5 text-ink-light transition-colors hover:bg-ink hover:text-paper"
-                  >
-                    <Linkedin className="h-4 w-4" aria-hidden="true" />
-                  </a>
-                  <span className="font-mono text-[10px] text-ink-light">
-                    {profile.githubHandle}
-                  </span>
+                <div className="mt-6 flex flex-col gap-3 border-t border-ink/10 pt-6">
+                  <CvButton variant="sheet" />
+                  <div className="flex items-center gap-3">
+                    <a
+                      href={profile.github}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="GitHub profile"
+                      className="rounded-full bg-ink/5 p-2.5 text-ink-light transition-colors hover:bg-ink hover:text-paper"
+                    >
+                      <Github className="h-4 w-4" aria-hidden="true" />
+                    </a>
+                    <a
+                      href={profile.linkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="LinkedIn profile"
+                      className="rounded-full bg-ink/5 p-2.5 text-ink-light transition-colors hover:bg-ink hover:text-paper"
+                    >
+                      <Linkedin className="h-4 w-4" aria-hidden="true" />
+                    </a>
+                    <span className="font-mono text-[10px] text-ink-light">
+                      {profile.githubHandle}
+                    </span>
+                  </div>
                 </div>
               </nav>
             </SheetContent>
           </Sheet>
 
           <a
-            href="#top"
+            href="#/"
+            aria-label="Diego Yonoff — home"
             className="group flex items-center gap-2.5"
-            aria-label="Back to top — Diego Yonoff, IAM portfolio"
           >
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink text-paper transition-transform group-hover:scale-105">
               <Fingerprint className="h-5 w-5 text-brand" aria-hidden="true" />
@@ -163,16 +171,16 @@ export function PortfolioHeader() {
           className="hidden items-center gap-5 font-mono text-xs font-medium tracking-wide md:flex"
           aria-label="Primary navigation"
         >
-          {site.nav.map((item) => {
-            const isActive = activeSection === item.href;
+          {site.pages.map((item) => {
+            const isActive = current === pageKeyOf(item.href);
             return (
               <a
                 key={item.href}
                 href={item.href}
-                aria-current={isActive ? "true" : undefined}
+                aria-current={isActive ? "page" : undefined}
                 className={`rounded-sm px-0.5 py-1 underline-offset-4 transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand ${
                   isActive
-                    ? "text-ink font-semibold underline decoration-brand decoration-2"
+                    ? "font-semibold text-ink underline decoration-brand decoration-2"
                     : "text-ink-light"
                 }`}
               >
@@ -184,6 +192,7 @@ export function PortfolioHeader() {
 
         <div className="flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
+          <CvButton />
           <a
             href={profile.github}
             target="_blank"

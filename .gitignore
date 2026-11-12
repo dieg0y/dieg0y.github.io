@@ -64,3 +64,6 @@ prisma/
 tests/
 download/
 examples/
+
+# dev server log
+dev.log

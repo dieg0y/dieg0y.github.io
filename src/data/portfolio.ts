@@ -7,8 +7,12 @@
  *   "foundational" for concepts under active study.
  * - Every project is labeled as a personal or academic project. None of this
  *   is professional employment.
- * - Certifications only appear with their real status (verified / in progress /
- *   target). No invented employers, clients, metrics, or results.
+ * - Certifications only appear with their real status (verified / in progress).
+ *   No invented employers, clients, metrics, or results.
+ *
+ * SITE STRUCTURE: this is a page-based portfolio (hash routes like #/about),
+ * not a single infinite scroll. `site.pages` drives the header, footer and
+ * home navigation.
  */
 
 export type SkillLevel = "hands-on" | "working" | "foundational";
@@ -48,6 +52,7 @@ export interface Profile {
   linkedin: string;
   linkedinHandle: string;
   cvUrl: string;
+  /** Inline-viewable CV (same file — opened in the on-site PDF viewer) */
   summary: string;
   positioning: string[];
 }
@@ -71,7 +76,6 @@ export const profile: Profile = {
   positioning: [
     "Primary focus: IAM — identity lifecycle (JML), RBAC, access governance, and the Microsoft identity stack.",
     "Complementary angle: SOC / Blue Team fundamentals, kept only where they add value to identity security and ITDR.",
-    "Current status: no professional IAM employment yet — everything here is documented personal study, academic work, and hands-on labs.",
   ],
 };
 
@@ -102,25 +106,25 @@ export const skillGroups: SkillGroup[] = [
         name: "Identity lifecycle (JML)",
         level: "working",
         evidence:
-          "Studied across a 34-phase IAM roadmap; practiced joiner/mover/leaver workflows in simulated ticket queues.",
+          "Studied end to end; practiced joiner/mover/leaver workflows in simulated ticket queues.",
       },
       {
         name: "RBAC & least privilege",
         level: "hands-on",
         evidence:
-          "Implemented role-based endpoint authorization in Spring Security (plazoleta-usuarios) and built an RBAC analyzer tool in VaultNotes.",
+          "Implemented role-based endpoint authorization in Spring Security (plazoleta) and built an RBAC analyzer tool in VaultNotes.",
       },
       {
         name: "Separation of duties (SoD)",
         level: "working",
         evidence:
-          "Studied as part of access governance and role-model design phases; applied conceptually in role matrices.",
+          "Studied within access governance and role-model design; applied conceptually in role matrices.",
       },
       {
         name: "Access reviews & campaigns",
         level: "working",
         evidence:
-          "Studied certification/recertification workflows and completed an access-review week simulation in VaultNotes.",
+          "Studied certification/recertification workflows and completed an access-review simulation in VaultNotes.",
       },
       {
         name: "Provisioning / deprovisioning",
@@ -132,7 +136,7 @@ export const skillGroups: SkillGroup[] = [
         name: "IGA concepts (role models, role mining)",
         level: "working",
         evidence:
-          "Studied IGA architecture, 9-column role matrices, and role engineering/mining phases of my roadmap.",
+          "Studied IGA architecture, role matrices, and role engineering/mining.",
       },
       {
         name: "Identity auditing & hygiene",
@@ -151,7 +155,7 @@ export const skillGroups: SkillGroup[] = [
         name: "Active Directory",
         level: "hands-on",
         evidence:
-          "Home lab: AD access-audit project (users, groups, SIDs, stale access). Built AD account tooling and troubleshooting guides in VaultNotes.",
+          "Home-lab audit project (users, groups, SIDs, stale access); built AD account tooling and troubleshooting guides in VaultNotes.",
       },
       {
         name: "Microsoft Entra ID",
@@ -235,13 +239,13 @@ export const skillGroups: SkillGroup[] = [
         name: "KQL & log analysis",
         level: "hands-on",
         evidence:
-          "Detection queries and log correlation practiced in SC-200 / Hack The Box labs; KQL references built into VaultNotes.",
+          "Detection queries and log correlation practiced in Blue Team labs; KQL references built into VaultNotes.",
       },
       {
         name: "Alert triage & investigation",
         level: "hands-on",
         evidence:
-          "Hack The Box SOC labs: brute force, privilege escalation, lateral movement investigations with escalation notes.",
+          "SOC labs: brute force, privilege escalation, and lateral movement investigations with escalation notes.",
       },
       {
         name: "MITRE ATT&CK mapping",
@@ -253,7 +257,7 @@ export const skillGroups: SkillGroup[] = [
         name: "SIEM concepts (Sentinel, Splunk)",
         level: "working",
         evidence:
-          "Lab exposure via SC-200 studies; documented detection and connector guidance in VaultNotes.",
+          "Lab exposure through security operations study; detection and connector guidance documented in VaultNotes.",
       },
     ],
   },
@@ -290,7 +294,7 @@ export const skillGroups: SkillGroup[] = [
         name: "Python",
         level: "hands-on",
         evidence:
-          "Shipped IPsubnetting CLI (layered architecture, input validation); automation scripts for study workflows.",
+          "Shipped a layered-architecture CLI tool with strict input validation; automation scripts for study workflows.",
       },
       {
         name: "TypeScript / React",
@@ -325,12 +329,12 @@ export const skillGroups: SkillGroup[] = [
         name: "Linux & Windows administration",
         level: "working",
         evidence:
-          "Tutoring labs on Linux CLI and system fundamentals; SysAdmin study pillar with systemd, permissions, and firewall references.",
+          "Tutoring labs on Linux CLI and system fundamentals; SysAdmin study with systemd, permissions, and firewall references.",
       },
       {
         name: "TCP/IP, DNS & subnetting",
         level: "hands-on",
-        evidence: "Built and shipped a subnetting CLI tool; academic networks coursework.",
+        evidence: "Academic networking coursework; built and shipped a subnetting CLI tool.",
       },
       {
         name: "Directory-adjacent networking (LDAP, DNS for AD)",
@@ -342,7 +346,7 @@ export const skillGroups: SkillGroup[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Projects — classified by relevance to the IAM positioning           */
+/* Projects — one unified list, collapsible on the page                */
 /* ------------------------------------------------------------------ */
 
 export type ProjectClass =
@@ -382,6 +386,8 @@ export interface Project {
   type: "personal" | "academic";
   featured?: boolean;
   repo: string;
+  /** companion repositories for multi-repo projects (e.g. merged systems) */
+  extraRepos?: { label: string; url: string }[];
   tags: string[];
   highlights: string[];
   stats?: { stars?: number; forks?: number; language?: string; updatedAt?: string };
@@ -393,7 +399,7 @@ export const projects: Project[] = [
     title: "VaultNotes",
     tagline: "Offline-first cybersecurity knowledge platform with a dedicated IAM pillar",
     description:
-      "A local-first, 100% offline PWA I built to study IAM the way the job actually works. Its IAM pillar bundles 50 simulated identity tickets, 50 knowledge-base articles, 50 runbooks, and 30 troubleshooting guides around a 373-item, 34-phase IAM analyst roadmap — covering JML, Active Directory, Entra ID, Graph automation, SSO & federation, MFA, IGA, PAM, ITDR, cloud IAM, Zero Trust, and GRC.",
+      "A local-first, 100% offline PWA I built to study IAM the way the job actually works. Its IAM pillar bundles 50 simulated identity tickets, 50 knowledge-base articles, 50 runbooks, and 30 troubleshooting guides — covering JML, Active Directory, Entra ID, Graph automation, SSO & federation, MFA, IGA, PAM, ITDR, cloud IAM, Zero Trust, and GRC.",
     classification: "iam",
     type: "personal",
     featured: true,
@@ -408,114 +414,25 @@ export const projects: Project[] = [
     stats: { language: "TypeScript", updatedAt: "2026-10-29T17:56:52Z" },
   },
   {
-    id: "plazoleta-usuarios",
-    title: "plazoleta-usuarios",
-    tagline: "User authentication microservice — Spring Security, JWT, RBAC",
+    id: "plazoleta",
+    title: "plazoleta",
+    tagline: "Authentication & authorization microservices — Spring Security, JWT, RBAC",
     description:
-      "Academic microservice (hexagonal architecture) that issues JWTs (HS256) carrying user id, role, and email claims, validates them on every request through a stateless filter, hashes passwords with BCrypt, and enforces role-based endpoint authorization across ADMINISTRADOR / PROPIETARIO / CLIENTE roles.",
+      "An academic microservices system built around identity. A user service issues JWTs (HS256) carrying user id, role, and email claims, hashes passwords with BCrypt, and enforces role-based endpoint authorization across ADMINISTRADOR / PROPIETARIO / CLIENTE roles; a companion service validates those same tokens through a shared signing secret — a small but real exercise in service-to-service trust.",
     classification: "iam",
     type: "academic",
     repo: "https://github.com/dieg0y/plazoleta-usuarios",
-    tags: ["Java", "Spring Boot", "Spring Security", "JJWT", "BCrypt", "MySQL", "Docker"],
+    extraRepos: [
+      { label: "plazoleta-restaurante", url: "https://github.com/dieg0y/plazoleta-restaurante" },
+    ],
+    tags: ["Java", "Spring Boot", "Spring Security", "JWT", "RBAC", "BCrypt", "MySQL", "Docker"],
     highlights: [
       "Role-gated endpoints: creating employees requires PROPIETARIO, listing users requires ADMINISTRADOR",
       "Stateless session policy with a custom JwtAuthenticationFilter and authentication entry point",
-      "Shared signing secret design so a second service can validate tokens without calling back",
-    ],
-    stats: { language: "Java", updatedAt: "2026-10-29T15:29:41Z" },
-  },
-  {
-    id: "plazoleta-restaurante",
-    title: "plazoleta-restaurante",
-    tagline: "Companion API consuming the identity service — cross-service authorization",
-    description:
-      "Academic companion microservice that validates JWTs issued by plazoleta-usuarios via the shared secret and enforces role-gated business operations — a small but real exercise in service-to-service trust and authorized data access between APIs.",
-    classification: "systems",
-    type: "academic",
-    repo: "https://github.com/dieg0y/plazoleta-restaurante",
-    tags: ["Java", "Spring Boot", "JWT validation", "Role checks", "MySQL"],
-    highlights: [
-      "JWT filter reuse across services with role extraction per request",
+      "Shared signing secret design so the companion service validates tokens without calling back",
       "Owner validation performed through the user service port, not duplicated locally",
     ],
     stats: { language: "Java", updatedAt: "2026-10-29T15:29:57Z" },
-  },
-  {
-    id: "ipsubnetting",
-    title: "IPsubnetting",
-    tagline: "Python CLI for IPv4 subnet math — networking fundamentals",
-    description:
-      "A command-line tool for IPv4 subnet calculations (CIDR validation, network/broadcast ranges, usable host counts, binary mask breakdown) with a deliberately layered architecture. I keep it as a supporting project: the networking fundamentals it demonstrates underpin directory services and network identity flows.",
-    classification: "systems",
-    type: "personal",
-    repo: "https://github.com/dieg0y/IPsubnetting",
-    tags: ["Python", "CLI", "Networking", "CIDR"],
-    highlights: [
-      "Clean separation of concerns: calculator logic, immutable results, presentation layer",
-      "Windows ANSI terminal support and input validation",
-    ],
-    stats: { language: "Python", stars: 5, forks: 1, updatedAt: "2026-10-29T15:29:16Z" },
-  },
-];
-
-/* ------------------------------------------------------------------ */
-/* Labs & structured study — explicitly personal, not employment       */
-/* ------------------------------------------------------------------ */
-
-export interface LabItem {
-  title: string;
-  kind: "Study program" | "Home lab" | "Online lab" | "Simulation";
-  period: string;
-  description: string;
-  points: string[];
-}
-
-export const labs: LabItem[] = [
-  {
-    title: "IAM Analyst Roadmap — structured self-study program",
-    kind: "Study program",
-    period: "Ongoing",
-    description:
-      "A 34-phase, 373-item curriculum I authored and track inside VaultNotes, with explicit exit criteria per item and a honesty rule distinguishing simulated, implemented, and designed work.",
-    points: [
-      "Covers JML, AD, Entra ID, Graph automation, SSO/federation, MFA, IGA, PAM, ITDR, AWS IAM, Zero Trust, GRC",
-      "Includes interview-prep answers, KPI literacy, and portfolio-project definitions",
-      "Progress and evidence tracked per item, not just 'watched a video'",
-    ],
-  },
-  {
-    title: "AD Access Audit Lab",
-    kind: "Home lab",
-    period: "Completed",
-    description:
-      "Home-lab project from the Active Directory phase of my roadmap: auditing access in AD, hunting stale accounts and excessive entitlements, and writing up findings.",
-    points: [
-      "Users, groups, SIDs, and effective access reviewed against least privilege",
-      "Findings and remediation documented as roadmap evidence",
-    ],
-  },
-  {
-    title: "Hack The Box — SOC labs",
-    kind: "Online lab",
-    period: "Completed modules",
-    description:
-      "Blue Team lab work I keep deliberately as the complementary side of my profile — it grounds my ITDR interest in real investigation practice.",
-    points: [
-      "Brute force, privilege escalation, and lateral movement detection with log correlation",
-      "Windows Event Logs and Sysmon telemetry analysis; MITRE ATT&CK mapping",
-      "Alert triage, escalation, and incident documentation practice",
-    ],
-  },
-  {
-    title: "Access Review Week — ticket simulation",
-    kind: "Simulation",
-    period: "Completed",
-    description:
-      "Final project of the VaultNotes IAM pillar: a simulated week of access-review tickets with study mode, state flow, and closure notes.",
-    points: [
-      "Reviewer-style decisions on entitlements with justification notes",
-      "Closure documentation mimicking real campaign workflows",
-    ],
   },
 ];
 
@@ -547,9 +464,6 @@ export const experience: ExperienceItem[] = [
   },
 ];
 
-export const experienceNote =
-  "That tutoring engagement is my only formal role so far. I have no professional IAM employment yet — the identity work on this site is personal study, academic projects, and labs, presented as exactly that. What I can offer a hiring team today is the discipline behind the evidence: every claim here traces back to a repository, a lab, or a documented roadmap item.";
-
 /* ------------------------------------------------------------------ */
 /* Certifications — real statuses only                                 */
 /* ------------------------------------------------------------------ */
@@ -557,7 +471,7 @@ export const experienceNote =
 export interface Certification {
   title: string;
   issuer: string;
-  status: "verified" | "in-progress" | "target";
+  status: "verified" | "in-progress";
   statusLabel: string;
   headline?: string;
   description: string;
@@ -566,6 +480,9 @@ export interface Certification {
   link?: string;
   linkLabel?: string;
   showModal?: boolean;
+  /** path to the official certificate PDF; shown in the on-site viewer
+   * when the file exists, with the detailed report as fallback */
+  pdf?: string;
 }
 
 export const certifications: Certification[] = [
@@ -591,33 +508,39 @@ export const certifications: Certification[] = [
       "Remote-team collaboration across global time zones",
     ],
     showModal: true,
+    pdf: "/certs/linguaskill-diego-yonoff.pdf",
   },
   {
-    title: "Microsoft SC-200 — Security Operations Analyst",
+    title: "Microsoft SC-300 — Identity and Access Administrator",
     issuer: "Microsoft",
     status: "in-progress",
     statusLabel: "In progress",
     headline: "Currently studying",
     description:
-      "Studying detection engineering, threat hunting with KQL, and incident response across Microsoft Defender XDR and Sentinel. For my IAM path this is the complementary ITDR layer: identity-relevant detection and investigation.",
+      "The exam I am actively studying toward — user lifecycle, Entra ID governance, access reviews, and Conditional Access at administrator depth. It is the spine of my current IAM study path.",
     bullets: [
-      "Mitigate threats using Microsoft Sentinel",
-      "Mitigate threats using Microsoft Defender XDR",
-      "KQL log queries and detection tuning",
+      "Implement user & group lifecycle in Entra ID",
+      "Access reviews, Conditional Access, and identity governance",
+      "Identity protection and workload identities",
     ],
-    link: "https://learn.microsoft.com/en-us/credentials/certifications/security-operations-analyst/",
-    linkLabel: "Microsoft SC-200 curriculum",
+    link: "https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/",
+    linkLabel: "Microsoft SC-300 curriculum",
   },
   {
-    title: "Microsoft SC-300 — Identity and Access Administrator",
-    issuer: "Microsoft",
-    status: "target",
-    statusLabel: "Next target",
-    headline: "Aligned with my active study roadmap",
+    title: "CompTIA Security+ (SY0-701)",
+    issuer: "CompTIA",
+    status: "in-progress",
+    statusLabel: "In progress",
+    headline: "Currently studying",
     description:
-      "The certification my current roadmap is building toward — user lifecycle, Entra ID governance, access reviews, and Conditional Access at administrator depth. Listed here as a goal, not a credential: I am not enrolled in the exam yet.",
-    link: "https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/",
-    linkLabel: "Microsoft SC-300 overview",
+      "Studying the Security+ body of knowledge in parallel: threats, cryptography, architecture, and operations. For my IAM path it anchors the security fundamentals an identity analyst is expected to carry.",
+    bullets: [
+      "General security concepts and change management",
+      "Threats, vulnerabilities, and mitigations",
+      "Security architecture and operations",
+    ],
+    link: "https://www.comptia.org/certifications/security",
+    linkLabel: "CompTIA Security+ overview",
   },
 ];
 
@@ -638,18 +561,33 @@ export const education = {
 };
 
 /* ------------------------------------------------------------------ */
-/* Site metadata                                                       */
+/* Blog disclaimer — appended to the bottom of every article           */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The owner of the site asked for it to be always present: AI was used to
+ * organize the documents, but all information, research, and investigation
+ * is his own. Kept here (pure data, no node:fs) so client components can
+ * import it safely.
+ */
+export const AI_DISCLAIMER = {
+  kicker: "A note on how this article was produced",
+  text: "AI tools were used to organize and format this document. All the information, research, and investigation behind it was done by Diego Yonoff Molina.",
+};
+
+/* ------------------------------------------------------------------ */
+/* Site metadata — page-based navigation (hash routes)                 */
 /* ------------------------------------------------------------------ */
 
 export const site = {
-  nav: [
-    { href: "#about", label: "About" },
-    { href: "#skills", label: "Skills" },
-    { href: "#projects", label: "Projects" },
-    { href: "#experience", label: "Experience" },
-    { href: "#certifications", label: "Certifications" },
-    { href: "#writing", label: "Writing" },
-    { href: "#contact", label: "Contact" },
+  /** hash-route pages rendered by the client router in src/components/portfolio/router.tsx */
+  pages: [
+    { href: "#/about", label: "About" },
+    { href: "#/skills", label: "Skills" },
+    { href: "#/projects", label: "Projects" },
+    { href: "#/certifications", label: "Certifications" },
+    { href: "#/blog", label: "Blogs" },
+    { href: "#/contact", label: "Contact" },
   ],
   identityLine: "Junior IAM Analyst · Barranquilla, Colombia",
 };

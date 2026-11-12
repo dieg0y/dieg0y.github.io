@@ -1,10 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowUpRight,
   CheckCircle2,
+  ChevronDown,
   FolderKanban,
   Github,
   GitFork,
@@ -33,13 +34,7 @@ const REPO_NAMES = [
   "VAULTNOTES",
   "plazoleta-usuarios",
   "plazoleta-restaurante",
-  "IPsubnetting",
 ] as const;
-
-const TYPE_LABELS: Record<Project["type"], string> = {
-  personal: "Personal project",
-  academic: "Academic project (university)",
-};
 
 function ProjectStats({ project, live }: { project: Project; live?: RepoStat }) {
   const stats = live ?? project.stats;
@@ -59,8 +54,6 @@ function ProjectStats({ project, live }: { project: Project; live?: RepoStat }) 
           {stats.language}
         </span>
       ) : null}
-      {/* Zero star/fork counts are real but read as "unvisited" — the
-          language and last-update signals carry the same weight honestly. */}
       {typeof stats?.stars === "number" && stats.stars > 0 ? (
         <span className="inline-flex items-center gap-1">
           <Star className="h-3 w-3" aria-hidden="true" />
@@ -94,7 +87,147 @@ function ClassBadge({ classification }: { classification: Project["classificatio
   );
 }
 
-export function Projects() {
+/** One project in the collapsible list: the title row stays compact and
+ * always shows the GitHub link; the details expand on demand. */
+function CollapsibleProject({
+  project,
+  defaultOpen,
+  live,
+}: {
+  project: Project;
+  defaultOpen?: boolean;
+  live?: RepoStat;
+}) {
+  const [open, setOpen] = React.useState(Boolean(defaultOpen));
+  const panelId = `${project.id}-panel`;
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5 }}
+      className="overflow-hidden rounded-2xl border border-ink/10 bg-card shadow-sm transition-colors hover:border-brand/40"
+    >
+      {/* Header row — title toggles the panel; GitHub stays reachable always */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-5 sm:px-7">
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-controls={panelId}
+          className="group flex min-h-[44px] min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        >
+          <ChevronDown
+            className={`h-5 w-5 shrink-0 text-ink-light transition-transform duration-300 group-hover:text-brand ${
+              open ? "rotate-180" : ""
+            }`}
+            aria-hidden="true"
+          />
+          <span className="min-w-0">
+            <span className="mb-1 flex flex-wrap items-center gap-2">
+              <ClassBadge classification={project.classification} />
+              {project.featured ? (
+                <span className="rounded-full border border-emerald-600/25 bg-emerald-600/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                  Flagship
+                </span>
+              ) : null}
+            </span>
+            <span className="block font-mono text-xl font-bold leading-tight text-ink transition-colors group-hover:text-brand sm:text-2xl">
+              {project.title}
+            </span>
+            <span className="mt-0.5 block truncate font-serif text-sm italic text-ink-light sm:text-base">
+              {project.tagline}
+            </span>
+          </span>
+        </button>
+
+        {/* Always-visible repo link — the proof is one click away, collapsed or not */}
+        <a
+          href={project.repo}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-xs font-semibold text-paper shadow-md transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        >
+          <Github className="h-4 w-4" aria-hidden="true" />
+          <span>View on GitHub</span>
+          <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </a>
+      </div>
+
+      {/* Expanding panel */}
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.div
+            key="panel"
+            id={panelId}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-ink/10 px-5 pb-7 pt-6 sm:px-7">
+              <p className="max-w-3xl text-sm leading-relaxed text-ink-light sm:text-base">
+                {project.description}
+              </p>
+
+              <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
+                {project.highlights.map((h) => (
+                  <li
+                    key={h}
+                    className="flex items-start gap-2.5 text-xs leading-relaxed text-ink-light"
+                  >
+                    <CheckCircle2
+                      className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-500"
+                      aria-hidden="true"
+                    />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-6 flex flex-wrap gap-2 font-mono text-[11px]">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-md border border-ink/10 bg-ink/5 px-2.5 py-1 text-ink-light"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-ink/10 pt-5">
+                <ProjectStats project={project} live={live} />
+                {project.extraRepos && project.extraRepos.length > 0 ? (
+                  <div className="flex flex-wrap gap-3">
+                    {project.extraRepos.map((r) => (
+                      <a
+                        key={r.url}
+                        href={r.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`View ${r.label} on GitHub`}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-ink/20 px-4 py-2 font-mono text-[11px] font-semibold text-ink transition-colors hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                      >
+                        <Github className="h-3.5 w-3.5" aria-hidden="true" />
+                        <span>{r.label}</span>
+                        <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </motion.article>
+  );
+}
+
+export function ProjectsView() {
   const [liveStats, setLiveStats] = React.useState<Record<string, RepoStat>>({});
 
   React.useEffect(() => {
@@ -142,183 +275,53 @@ export function Projects() {
     };
   }, []);
 
-  const featured = projects.find((p) => p.featured);
-  const rest = projects.filter((p) => !p.featured);
   const liveFor = (p: Project) => {
     const name = p.repo.split("/").pop()?.toLowerCase();
     return name ? liveStats[name] : undefined;
   };
 
   return (
-    <section id="projects" aria-labelledby="projects-label" className="scroll-mt-24">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-        <SectionHeading
-          id="projects"
-          kicker="What I've Built"
-          icon={FolderKanban}
-          title="Projects"
-          description="Repositories I created and maintain, classified by how they serve the IAM positioning. Each one is labeled personal or academic — none of this is client work."
-        />
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <SectionHeading
+        kicker="What I've Built"
+        icon={FolderKanban}
+        title="Projects"
+        description="The repositories I created and maintain. Tap a project to expand what it actually does — the GitHub link stays visible either way. Each one is labeled personal or academic: none of this is client work."
+      />
 
-        {featured ? (
-          <motion.article
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 rounded-2xl border border-ink/10 bg-card p-7 shadow-sm transition-colors hover:border-brand/40 sm:p-9"
-          >
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <ClassBadge classification={featured.classification} />
-                <span className="rounded-full border border-emerald-600/25 bg-emerald-600/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
-                  Flagship
-                </span>
-              </div>
-              <span className="font-mono text-[11px] text-ink-light">
-                {TYPE_LABELS[featured.type]}
-              </span>
-            </div>
-
-            <h3 className="font-mono text-2xl font-bold text-ink sm:text-3xl">
-              {featured.title}
-            </h3>
-            <p className="mt-1.5 font-serif text-base italic text-ink-light sm:text-lg">
-              {featured.tagline}
-            </p>
-
-            <p className="mt-5 max-w-3xl text-sm leading-relaxed text-ink-light sm:text-base">
-              {featured.description}
-            </p>
-
-            <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
-              {featured.highlights.map((h) => (
-                <li key={h} className="flex items-start gap-2.5 text-xs leading-relaxed text-ink-light">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-500" aria-hidden="true" />
-                  {h}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-7 flex flex-wrap gap-2 font-mono text-[11px]">
-              {featured.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-md border border-ink/10 bg-ink/5 px-2.5 py-1 text-ink-light"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-ink/10 pt-6">
-              <ProjectStats project={featured} live={liveFor(featured)} />
-              <a
-                href={featured.repo}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-mono text-xs font-semibold text-paper shadow-md transition-colors hover:bg-brand"
-              >
-                <Github className="h-4 w-4" aria-hidden="true" />
-                <span>View on GitHub</span>
-                <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-              </a>
-            </div>
-          </motion.article>
-        ) : null}
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {rest.map((project, i) => (
-            <motion.article
-              key={project.id}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: (i % 3) * 0.07 }}
-              className="flex flex-col rounded-2xl border border-ink/10 bg-card p-6 shadow-sm transition-colors hover:border-brand/40"
-            >
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <ClassBadge classification={project.classification} />
-                <span className="font-mono text-[10px] uppercase tracking-wider text-ink-light">
-                  {TYPE_LABELS[project.type]}
-                </span>
-              </div>
-
-              <h3 className="font-mono text-lg font-bold text-ink">
-                {project.title}
-              </h3>
-              <p className="mt-1 font-serif text-sm italic leading-snug text-ink-light">
-                {project.tagline}
-              </p>
-
-              <p className="mt-4 text-xs leading-relaxed text-ink-light sm:text-sm">
-                {project.description}
-              </p>
-
-              {project.highlights.length > 0 ? (
-                <ul className="mt-4 space-y-2">
-                  {project.highlights.map((h) => (
-                    <li key={h} className="flex items-start gap-2 text-[11px] leading-relaxed text-ink-light">
-                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" aria-hidden="true" />
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-
-              <div className="mt-4 flex flex-wrap gap-1.5 font-mono text-[10px]">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-md border border-ink/10 bg-ink/5 px-2 py-0.5 text-ink-light"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-auto flex items-center justify-between gap-3 border-t border-ink/10 pt-5 mt-6">
-                <ProjectStats project={project} live={liveFor(project)} />
-                <a
-                  href={project.repo}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={`View ${project.title} on GitHub`}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-ink/20 px-4 py-2 font-mono text-[11px] font-semibold text-ink transition-colors hover:border-brand hover:text-brand"
-                >
-                  <Github className="h-3.5 w-3.5" aria-hidden="true" />
-                  <span>Repo</span>
-                  <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
-                </a>
-              </div>
-            </motion.article>
-          ))}
-
-          <motion.aside
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5, delay: 0.14 }}
-            className="flex flex-col justify-between rounded-2xl border border-dashed border-ink/20 p-6"
-          >
-            <div>
-              <h3 className="font-serif text-lg font-bold text-ink">
-                Why IPsubnetting isn&rsquo;t the flagship anymore
-              </h3>
-              <p className="mt-2 text-xs leading-relaxed text-ink-light sm:text-sm">
-                My previous portfolio led with a subnetting calculator — real
-                code, but it said nothing about identity. The flagship now is
-                the project where I actually live in the IAM problem space
-                every day. The networking tool stays listed as the foundation
-                layer it is.
-              </p>
-            </div>
-            <p className="mt-5 font-mono text-[11px] uppercase tracking-wider text-brand">
-              Positioning &gt; volume
-            </p>
-          </motion.aside>
-        </div>
+      <div className="space-y-6">
+        {projects.map((project) => (
+          <CollapsibleProject
+            key={project.id}
+            project={project}
+            defaultOpen={project.featured}
+            live={liveFor(project)}
+          />
+        ))}
       </div>
-    </section>
+
+      <motion.aside
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="mt-6 rounded-2xl border border-dashed border-ink/20 p-6 text-xs leading-relaxed text-ink-light sm:text-sm"
+        role="note"
+      >
+        <p>
+          Beyond these repositories, the same body of work includes home-lab
+          audits and ticket simulations documented inside{" "}
+          <a
+            href="https://github.com/dieg0y/VAULTNOTES"
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-brand underline decoration-brand/40 underline-offset-2 hover:text-ink"
+          >
+            VaultNotes
+          </a>{" "}
+          — the knowledge platform is itself the evidence.
+        </p>
+      </motion.aside>
+    </div>
   );
 }
