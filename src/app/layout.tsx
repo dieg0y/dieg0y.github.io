@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -52,6 +52,15 @@ const jetbrainsMono = localFont({
   ],
   display: "swap",
 });
+
+/* Dark-first: the site opens on the ink theme; the header toggle and a
+ * stored preference still switch it, and the system option stays available. */
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f9f8f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#17140f" },
+  ],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dieg0y.github.io"),
@@ -143,7 +152,7 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

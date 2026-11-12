@@ -38,7 +38,7 @@ export const LEVEL_META: Record<
   },
 };
 
-export interface Profile {
+interface Profile {
   name: string;
   fullName: string;
   role: string;
@@ -83,7 +83,7 @@ export const profile: Profile = {
 /* Skills — evidence-based classification                              */
 /* ------------------------------------------------------------------ */
 
-export interface SkillItem {
+interface SkillItem {
   name: string;
   level: SkillLevel;
   evidence: string;
@@ -349,7 +349,7 @@ export const skillGroups: SkillGroup[] = [
 /* Projects — one unified list, collapsible on the page                */
 /* ------------------------------------------------------------------ */
 
-export type ProjectClass =
+type ProjectClass =
   | "iam"
   | "identity-security"
   | "soc-complementary"

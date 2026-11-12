@@ -6,6 +6,9 @@ Portfolio of Diego Yonoff (Barranquilla, Colombia), positioned for a first remot
 **IAM Analyst** role — Identity & Access Management, with SOC / Blue Team
 fundamentals kept strictly as the complementary ITDR layer.
 
+**Dark by default.** The site opens on the ink theme; the header toggle (and a
+stored preference) switches between dark and light. Both meet WCAG AA.
+
 ## Content policy
 
 This site is built on one non-negotiable rule: **no invented evidence.**
@@ -15,20 +18,24 @@ This site is built on one non-negotiable rule: **no invented evidence.**
 - Every project is labeled `personal` or `academic`; none of it is client work.
 - Certifications only appear with their real status: verified or in progress.
 - Live repository stats are fetched from the public GitHub REST API at runtime;
-  if that fails, an audited static snapshot (Oct 29, 2026) is shown instead.
+  if that fails, an audited static snapshot is shown instead.
 
 ## Site architecture
 
 **Page-based, not infinite scroll.** Each section is its own screen behind a
-hash route (`#/about`, `#/skills`, `#/projects`, `#/certifications`, `#/blog`,
+hash route (`#/about`, `#/skills`, `#/projects`, `#/certifications`,
 `#/blog/<slug>`, `#/contact`) driven by the client-side router in
-`src/components/portfolio/router.tsx`. The home page (`#/`) shows the hero,
-page navigation cards, and the latest blogs.
+`src/components/portfolio/router.tsx`. Long lists (skills, projects,
+certifications) are collapsible and collapsed by default — compact on open,
+details on demand, with the primary action (repository, certificate, CV)
+always visible. The home page (`#/`) shows the hero, page navigation cards,
+and the latest blogs.
 
 ## Stack
 
 - **Next.js 16** (App Router, Turbopack) + **TypeScript** strict mode
 - **Tailwind CSS 4** with a custom paper-and-ink editorial design system
+  (`src/app/globals.css`), **next-themes** for dark/light
 - Self-hosted variable fonts (Playfair Display, DM Sans, JetBrains Mono) —
   no runtime or build-time dependency on Google Fonts
 - **Framer Motion** for page transitions and collapsible sections
@@ -48,29 +55,31 @@ page navigation cards, and the latest blogs.
 
 ```
 src/
-  app/                 # App Router: layout, page, fonts, globals.css
-  components/portfolio/  # router.tsx (hash pages) + one view per page:
-                       #   home, about, skills, projects, certifications,
-                       #   blog (index + article), contact, header, footer,
-                       #   pdf-viewer (inline CV/certificate viewer)
-  components/ui/       # shadcn/ui primitives in use (sheet, toast, toaster)
-  data/                # portfolio.ts — profile, skills, projects, certifications
+  app/                 # App Router: layout, page, fonts, globals.css, icon
+  components/
+    portfolio/         # router.tsx (hash pages) + one view per page:
+                       #   home (hero + cards + latest blogs), about, skills,
+                       #   projects, certifications, blog (index + article),
+                       #   contact, header, footer, pdf-viewer, shared bits
+    ui/                # shadcn/ui primitives in use (sheet, toast, toaster)
+  data/portfolio.ts    # profile, skills, projects, certifications — edit here
   hooks/               # use-toast
-  lib/                 # cn(), TOC heading extraction, blog loader (blog.ts)
+  lib/                 # cn(), TOC heading extraction, blog loader
 content/blog/          # Blog posts — one Markdown file per post
                        # (drop a .md here and it's published; see GUIA-BLOGS.md)
-public/                # CV PDF, robots.txt, sitemap.xml, images
-  images/blog/<post>/  #   images belonging to each blog post
-  certs/               #   certificate PDFs for the inline viewer
-scripts/               # generate_cv.py — regenerates the CV PDF
-.github/workflows/     # deploy.yml — builds & publishes to GitHub Pages
+public/
+  cv-diego-yonoff-iam.pdf  # CV opened by the inline viewer
+  images/blog/<post>/      # images belonging to each blog post
+  certs/                   # certificate PDFs for the inline viewer
+scripts/generate_cv.py     # regenerates the CV PDF (ReportLab)
+.github/workflows/deploy.yml  # builds & publishes to GitHub Pages
 ```
 
-Portfolio content (profile, skills, projects, certifications) lives in
-`src/data/portfolio.ts` — edit that file to update the site. Blog posts live in
-`content/blog/*.md`: drop a Markdown file in and it's published automatically
-(images go in `public/images/blog/<post>/`; certificate PDFs in
-`public/certs/`). GUIA-BLOGS.md walks through the whole workflow in Spanish.
+Portfolio content lives in `src/data/portfolio.ts` — edit that file to update
+the site. Blog posts live in `content/blog/*.md`: drop a Markdown file in and
+it's published automatically (images go in `public/images/blog/<post>/`;
+certificate PDFs in `public/certs/`). GUIA-BLOGS.md walks through the whole
+workflow in Spanish.
 
 ## Development
 
@@ -82,8 +91,7 @@ bun run lint    # ESLint
 
 ## CV
 
-The downloadable CV (`public/cv-diego-yonoff-iam.pdf`) is generated with
-ReportLab:
+The CV (`public/cv-diego-yonoff-iam.pdf`) is generated with ReportLab:
 
 ```bash
 python3 scripts/generate_cv.py
